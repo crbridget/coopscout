@@ -8,7 +8,6 @@ import time
 from dotenv import load_dotenv
 import os
 import pandas as pd
-from collections import defaultdict
 
 # load the env file 
 load_dotenv() 
@@ -19,10 +18,8 @@ password = os.getenv("PASSWORD")
 
 # global variables
 URL = "https://northeastern-csm.symplicity.com/students/?signin_tab=0"
-SEARCH = "data analyst"
+SEARCH = "software engineering"
 LOCATION = "Boston, MA, USA"
-SKILLS = [' microsoft excel', 'power BI', 'postgres', 'SQL', 'python', 'tableau']
-
 
 class WebScraper:
 
@@ -31,8 +28,8 @@ class WebScraper:
         self.chrome_options = Options()
 
     def initialize_driver(self):
-        self.chrome_options.add_argument("--headless=new")
-        self.driver = webdriver.Chrome(options=self.chrome_options)
+        # self.chrome_options.add_argument("--headless=new")
+        self.driver = webdriver.Chrome()
 
     def initalize_wait(self):
         self.wait = WebDriverWait(self.driver, 5) 
@@ -75,74 +72,109 @@ class WebScraper:
         location_bar = self.wait.until(EC.element_to_be_clickable((By.ID, "jobs-location-input")))
         location_bar.send_keys(location + Keys.ENTER)
 
+    def filter_by_coop(self):
+        self.driver.find_element(By.CLASS_NAME, "icn-chevron_down").click()
+        self.driver.find_element(By.ID, "job_type-checkbox-0").click()
+        self.driver.find_element(By.XPATH, '//button[text()="Apply"]').click()
+
     def filter_not_qualified(self):
         time.sleep(2)
         all_spans = self.driver.find_elements(By.CSS_SELECTOR, "div.list-item-title span")
         self.job_titles_elements = [span for span in all_spans if span.text.strip() and span.text.strip() != "NOT QUALIFIED"]
+        
+    def scrape_company(self):
+        company_element = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "h3.space-right-sm.text-overflow")))
+        time.sleep(2)
+        print(f"Successfully scraped company!: {company_element.text.strip()} ")
+        return company_element.text.strip()
+    
+    def scrape_location(self):
+        try:
+            location_element = self.driver.find_element(By.CSS_SELECTOR, '[id^="sy_formfield_location_"]')
+            print(f"Successfully scraped location!: {location_element.text.strip()} ")
+            return location_element.text.strip()
+        except:
+            return "Not listed"
+    
+    def scrape_deadline(self):
+        try:
+            deadline_element = self.driver.find_element(By.ID, "sy_formfield_job_deadline")
+            print(f"Successfully scraped description!: {deadline_element.text.strip()}")
+            return deadline_element.text.strip()
+        except:
+            return "Not listed"
+    
+    def scrape_compensation(self):
+        try:
+            compensation_element = self.driver.find_element(By.CSS_SELECTOR, '[id^="sy_formfield_compensation_"]')
+            print(f"Successfully scraped pay!: {compensation_element.text.strip()} ")
+            return compensation_element.text.strip()
+        except:
+            return "Not listed"
 
-    def scrape_data(self, skills):
+    def scrape_major(self):
+        try:
+            major_element = self.driver.find_element(By.CSS_SELECTOR, '[id^="sy_formfield_targeted_academic_majors_"]')
+            print(f"Successfully scraped major!: {major_element.text.strip()} ")
+            return major_element.text.strip()
+        except:
+            return "Not listed"
+    
+    def scrape_min_gpa(self):
+        try:
+            min_gpa = self.driver.find_element(By.CSS_SELECTOR, '[id^="sy_formfield_screen_gpa_"]')
+            print(f"Successfully scraped min GPA!: {min_gpa.text.strip()} ")
+            return min_gpa.text.strip()
+        except:
+            return "Not listed"
+    
+    def scrape_description(self):
+        description_div = self.driver.find_element(By.CSS_SELECTOR, "div.field-widget-tinymce")
+        print(f"Successfully scraped description!: {description_div.text}")
+        return description_div.text
+
+    def scrape_data(self):
         coop_search = {}
         num_jobs = len(self.job_titles_elements)
 
         for i in range(num_jobs):
-            try:
-                all_spans = self.driver.find_elements(By.CSS_SELECTOR, "div.list-item-title span")
-                job_titles = [span for span in all_spans if span.text.strip() and span.text.strip() != "NOT QUALIFIED"]
+            all_spans = self.driver.find_elements(By.CSS_SELECTOR, "div.list-item-title span")
+            job_titles = [span for span in all_spans if span.text.strip() and span.text.strip() != "NOT QUALIFIED"]
 
-                job_title = job_titles[i].text
-                print(f"Job {i+1}: {job_title}")
+            job_title = job_titles[i].text
 
-                # Scroll element into view before clicking
-                self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", job_titles[i])
-                time.sleep(0.5)
+            # Scroll element into view before clicking
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", job_titles[i])
+            time.sleep(0.5)
 
-                job_titles[i].click()
-                time.sleep(2)
+            job_titles[i].click()
+            time.sleep(2)
 
-                # Get company info
-                try:
-                    company_element = self.wait.until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, "h3.space-right-sm.text-overflow"))
-                    )
-    
-                    # Wait longer for Angular to populate
-                    time.sleep(2)
-    
-                    company_name = company_element.text.strip()
-    
-                except Exception as e:
-                    print(f"  Error getting company: {e}")
-                    company_name = "N/A"
+            company_name = self.scrape_company()
+            location = self.scrape_location()
+            deadline = self.scrape_deadline()
+            compensation = self.scrape_compensation()
+            major = self.scrape_major()
+            min_GPA = self.scrape_min_gpa()
+            description = self.scrape_description()
 
-                try:
-                    skills_required = []
-                    for skill in skills:
-                        skill_lower = skill.lower()
-                        xpath = f"//*[translate(normalize-space(text()), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='{skill_lower}']"
-                        element = self.driver.find_element(By.XPATH, xpath)
-                        skills_required.append(element.text)
+            # Store data
+            coop_search[f'coop{i+1}'] = {
+                'title': job_title,
+                'company': company_name,
+                'location': location,
+                'deadline': deadline,
+                'compensation': compensation,
+                'targeted major': major,
+                'minimum GPA': min_GPA,
+                'description': description
+            }
 
-                except Exception as e:
-                    print(f"Error on coop{i+1} getting skills: {e}")
-
-                print(f"{job_title} at {company_name} requires : {skills_required}")
-
-                # Store data
-                coop_search[f'coop{i+1}'] = {
-                    'title': job_title,
-                    'company': company_name,
-                    'skills': skills_required
-                }
-
-                self.driver.back()
-                time.sleep(2)
-
-            except Exception as e:
-                print(f"Error on job {i+1}: {e}")
-                continue
+            self.driver.back()
+            time.sleep(2)
 
         df = pd.DataFrame.from_dict(coop_search, orient='index')
-        df.to_csv('coopsearch.csv', index=False)
+        df.to_json('coopsearch.json', orient='records', indent=2)
 
     def close_driver(self):
         self.driver.quit()
@@ -157,9 +189,10 @@ def main():
     scraper.search(SEARCH)
     scraper.get_job_results()
     scraper.filter_by_location(LOCATION)
+    scraper.filter_by_coop()
     scraper.filter_not_qualified()
-    scraper.scrape_data(SKILLS)
+    scraper.scrape_data()
     scraper.close_driver()
 
-main()
-
+if __name__ == "__main__":
+    main()
