@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Job } from './types/job';
+import type { Job } from './types/job';
+import JobCard from "./components/JobCard.tsx";
 import './App.css';
 
 function App() {
@@ -26,8 +27,12 @@ function App() {
     return (
         <div className="App">
             <h1>CoopScout</h1>
-            <p>Found {jobs.length} co-op position</p>
-            {/*Add components here*/}
+            <p>Found {jobs.length} co-op positions</p>
+            <div className="jobs-container">
+                {jobs.map((job, index) => (
+                    <JobCard key={index} job={job} />
+                ))}
+            </div>
         </div>
     );
 }
