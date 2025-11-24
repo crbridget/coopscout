@@ -105,11 +105,7 @@ This is a personal project for Northeastern students. If you have suggestions or
 
 ## Authors
 
-Built by Bridget Crampton, Northeastern Data Science '27
-
-## License
-
-MIT License
+Built by Bridget Crampton, Northeastern Data Science '28
 
 ## Project Status
 
