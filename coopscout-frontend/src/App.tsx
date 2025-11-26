@@ -26,7 +26,7 @@ function App() {
 
     return (
         <div className="App">
-            <h1>CoopScout</h1>
+            <h1 className="title">CoopScout</h1>
             <p>Found {jobs.length} co-op positions</p>
             <div className="jobs-container">
                 {jobs.map((job, index) => (
