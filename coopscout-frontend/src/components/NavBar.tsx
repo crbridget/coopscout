@@ -7,13 +7,13 @@ const NavBar = () => {
     return (
         <div className="navbar-container">
             <div className="navbar-content">
-                <h1 className="navbar-title" onClick={() => navigate('/pages/home')} style={{cursor: 'pointer'}}>
+                <h1 className="navbar-title" onClick={() => navigate('/')} style={{cursor: 'pointer'}}>
                     CoopScout
                 </h1>
                 <div className="navbar-buttons">
                     <button
                         className="profile-button"
-                        onClick={() => navigate('/pages/profile')}
+                        onClick={() => navigate('/profile')}
                     >
                         Profile
                     </button>
