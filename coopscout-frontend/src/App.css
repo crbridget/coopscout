@@ -1,11 +1,13 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
 .App {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
-}
-
-.title {
-  align-content: center;
+  padding: 80px 20px 20px 20px; /* Top padding accounts for fixed navbar */
+  text-align: center;
 }
 
 .jobs-container {

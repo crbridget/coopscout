@@ -52,3 +52,30 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 6px;
+}
+
+.favorite-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.2s;
+    color: #d1d5db;
+    outline: none;
+}
+
+.favorite-btn.favorited {
+    color: #fbbf24;
+    outline: none;
+}
+
+.favorite-btn:hover {
+    transform: scale(1.2);
+}
