@@ -1,8 +1,10 @@
+import './Profile.css'
+
 function Profile() {
     return (
         <div className="App">
-            <h1>Profile Page</h1>
-            <p>This is your profile!</p>
+            <h1 className="title">Profile Page</h1>
+            <p className="paragraph">This is your profile!</p>
         </div>
     );
 }

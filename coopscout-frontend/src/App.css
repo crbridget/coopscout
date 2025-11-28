@@ -1,10 +1,12 @@
-.App {
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 20px;
+body {
+  margin: 0;
+  padding: 0;
 }
 
-.title {
+.App {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 20px 20px 20px; /* Top padding accounts for fixed navbar */
   text-align: center;
 }
 
