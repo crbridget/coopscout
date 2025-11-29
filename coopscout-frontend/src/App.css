@@ -4,16 +4,7 @@ body {
 }
 
 .App {
-  max-width: 1200px;
   margin: 0 auto;
-  padding: 80px 20px 20px 20px; /* Top padding accounts for fixed navbar */
+  padding: 80px 20px 20px 20px;
   text-align: center;
-}
-
-.jobs-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 350px);
-  gap: 20px;
-  margin-top: 20px;
-  justify-content: center;
 }

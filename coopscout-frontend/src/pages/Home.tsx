@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { Job } from '../../public/lib/types/job';
 import JobCard from "../components/JobCard.tsx";
-import '../App.css';
+import './Home.css'; // Changed this line
 
 function Home() {
     const [jobs, setJobs] = useState<Job[]>([]);
@@ -45,7 +45,7 @@ function Home() {
     }
 
     return (
-        <div className="App">
+        <div className="home-page"> {/* Changed this line */}
             <h1>CoopScout</h1>
             <p>Found {jobs.length} co-op positions</p>
 
