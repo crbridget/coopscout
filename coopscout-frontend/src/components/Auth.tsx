@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import './Auth.css';
 
 export default function Auth() {
     const [loading, setLoading] = useState(false);
