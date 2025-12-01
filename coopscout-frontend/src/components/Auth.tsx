@@ -22,17 +22,17 @@ export default function Auth() {
     };
 
     return (
-        <div style={{ maxWidth: '400px', margin: '0 auto', padding: '20px' }}>
+        <div className="auth">
             <h2>Sign In</h2>
             <form onSubmit={handleLogin}>
                 <input
+                    className="email-box"
                     type="email"
                     placeholder="Your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    style={{ width: '100%', padding: '10px', marginBottom: '10px' }}
                 />
-                <button type="submit" disabled={loading}>
+                <button className="submit-button" type="submit" disabled={loading}>
                     {loading ? 'Loading...' : 'Send magic link'}
                 </button>
             </form>

@@ -1,0 +1,14 @@
+.auth {
+    max-width: 400px;
+    min-height: 100vh;
+    padding-top: 80px;
+    align-content: center;
+    align-self: center;
+    margin: 0;
+}
+
+.email-box {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+}
