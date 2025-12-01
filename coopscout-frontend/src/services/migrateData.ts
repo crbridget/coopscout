@@ -1,5 +1,5 @@
-import { supabase } from '../src/lib/supabaseClient';
-import jobsData from '../public/coopsearch.json';
+import { supabase } from '../lib/supabaseClient';
+import jobsData from '../../public/coopsearch.json';
 
 async function migrateJobs() {
     const { data, error } = await supabase
