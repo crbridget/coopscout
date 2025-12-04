@@ -26,19 +26,20 @@ export default function ProfileSetup({ userId, userEmail, onComplete }: ProfileS
 
             const { error } = await supabase
                 .from('users')
-                .insert([
+                .upsert([  // Changed from insert to upsert
                     {
                         id: userId,
                         email: userEmail,
-                        full_name: formData.full_name, // Add this - you forgot it!
+                        full_name: formData.full_name,
                         major: formData.major,
                         graduation_year: parseInt(formData.graduation_year),
                         gpa: parseFloat(formData.gpa)
                     }
-                ]);
+                ], { onConflict: 'id' });
+
             if (error) throw error;
 
-            alert('Profile created successfully');
+            alert('Profile created successfully!');
             onComplete();
         } catch (error: any) {
             alert(error.message);
