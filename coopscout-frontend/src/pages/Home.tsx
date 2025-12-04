@@ -1,42 +1,84 @@
 import { useState, useEffect } from 'react';
 import type { Job } from '../../public/lib/types/job';
 import JobCard from "../components/JobCard.tsx";
-import './Home.css'; // Changed this line
+import { jobService } from '../services/jobService';
+import { favoriteService } from '../services/favoriteService';
+import { supabase } from '../lib/supabaseClient';
+import './Home.css';
 
 function Home() {
     const [jobs, setJobs] = useState<Job[]>([]);
     const [loading, setLoading] = useState(true);
     const [favorites, setFavorites] = useState<string[]>([]);
+    const [user, setUser] = useState<any>(null);
 
     useEffect(() => {
-        fetch('/coopsearch.json')
-            .then(response => response.json())
-            .then(data => {
-                setJobs(data);
-                setLoading(false);
-            })
-            .catch(error => {
-                console.error('Error loading jobs: ', error);
-                setLoading(false);
-            });
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setUser(session?.user ?? null);
+        });
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user ?? null);
+        });
+
+        return () => subscription.unsubscribe();
     }, []);
 
+    // Load jobs from Supabase
     useEffect(() => {
-        const savedFavorites = localStorage.getItem('favoriteJobs');
-        if (savedFavorites) {
-            setFavorites(JSON.parse(savedFavorites));
-        }
+        loadJobs();
     }, []);
 
+    // Load favorites when user changes
     useEffect(() => {
-        localStorage.setItem('favoriteJobs', JSON.stringify(favorites));
-    }, [favorites]);
-
-    const toggleFavorite = (jobTitle: string) => {
-        if (favorites.includes(jobTitle)) {
-            setFavorites(favorites.filter(title => title !== jobTitle));
+        if (user) {
+            loadFavorites();
         } else {
-            setFavorites([...favorites, jobTitle]);
+            setFavorites([]);
+        }
+    }, [user]);
+
+    const loadJobs = async () => {
+        try {
+            const data = await jobService.getAllJobs();
+            setJobs(data);
+        } catch (error) {
+            console.error('Error loading jobs:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const loadFavorites = async () => {
+        if (!user) return;
+
+        try {
+            const favs = await favoriteService.getFavorites(user.id);
+            setFavorites(favs);
+        } catch (error) {
+            console.error('Error loading favorites:', error);
+        }
+    };
+
+    const toggleFavorite = async (jobId: string) => {
+        if (!user) {
+            alert('Please sign in to save favorites');
+            return;
+        }
+
+        const isFavorite = favorites.includes(jobId);
+
+        try {
+            await favoriteService.toggleFavorite(user.id, jobId, isFavorite);
+
+            // Update local state
+            if (isFavorite) {
+                setFavorites(favorites.filter(id => id !== jobId));
+            } else {
+                setFavorites([...favorites, jobId]);
+            }
+        } catch (error) {
+            console.error('Error toggling favorite:', error);
         }
     };
 
@@ -45,17 +87,17 @@ function Home() {
     }
 
     return (
-        <div className="home-page"> {/* Changed this line */}
+        <div className="home-page">
             <h1>CoopScout</h1>
             <p>Found {jobs.length} co-op positions</p>
 
             <div className="jobs-container">
-                {jobs.map((job, index) => (
+                {jobs.map((job) => (
                     <JobCard
-                        key={index}
+                        key={job.id}
                         job={job}
-                        onToggleFavorite={() => toggleFavorite(job.title)}
-                        isFavorite={favorites.includes(job.title)}
+                        onToggleFavorite={() => toggleFavorite(job.id!)}
+                        isFavorite={favorites.includes(job.id!)}
                     />
                 ))}
             </div>
