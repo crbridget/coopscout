@@ -165,7 +165,6 @@ class WebScraper:
     def scrape_company(self):
         company_element = self.wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "h3.space-right-sm.text-overflow")))
-        time.sleep(2)
         return company_element.text.strip()
 
     @profile
@@ -229,9 +228,12 @@ class WebScraper:
             return False
 
     @profile
-    def scrape_data(self):
+    @profile
+    def scrape_data(self, max_jobs=None):  # Add max_jobs parameter with default None
         print("\n" + "=" * 50)
         print("🎯 Starting job scraping process...")
+        if max_jobs:
+            print(f"⚠️  Limited to {max_jobs} jobs for testing")
         print("=" * 50 + "\n")
 
         all_jobs = []
@@ -244,7 +246,6 @@ class WebScraper:
 
             all_spans = self.driver.find_elements(By.CSS_SELECTOR, "div.list-item-title span")
 
-            # Store both element AND text to avoid stale references
             job_data = []
             for span in all_spans:
                 text = span.text.strip()
@@ -255,6 +256,19 @@ class WebScraper:
             print(f"Found {num_jobs} jobs on this page\n")
 
             for i in range(num_jobs):
+                # CHECK IF WE'VE HIT THE LIMIT
+                if max_jobs and total_jobs_scraped >= max_jobs:
+                    print(f"\n⚠️  Reached job limit of {max_jobs}. Stopping...")
+
+                    # Save what we have so far
+                    if all_jobs:
+                        print("💾 Saving data to coopsearch.json...")
+                        df = pd.DataFrame.from_dict(all_jobs)
+                        df.to_json('coopsearch.json', orient='records', indent=2)
+                        print(f"✓ Successfully saved {len(all_jobs)} jobs to coopsearch.json")
+
+                    return  # Exit the function early
+
                 all_spans = self.driver.find_elements(By.CSS_SELECTOR, "div.list-item-title span")
                 job_elements = []
                 for span in all_spans:
@@ -262,19 +276,16 @@ class WebScraper:
                     if text and text != "NOT QUALIFIED":
                         job_elements.append(span)
 
-                # Use the fresh element reference
                 element = job_elements[i]
                 job_title = element.text
 
                 print(f"  [{i + 1}/{num_jobs}] Scraping: {job_title}")
 
-                # Scroll element into view
                 self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
                 time.sleep(0.5)
 
-                # Use JavaScript click to avoid interception
                 self.driver.execute_script("arguments[0].click();", element)
-                time.sleep(2)
+                time.sleep(1)  # Reduced from 2
 
                 company_name = self.scrape_company()
                 location = self.scrape_location()
@@ -288,7 +299,6 @@ class WebScraper:
                 print(f"      Location: {location}")
                 print(f"      Compensation: {compensation}")
 
-                # Store data
                 all_jobs.append({
                     'title': job_title,
                     'company': company_name,
@@ -304,7 +314,7 @@ class WebScraper:
                 print(f"      ✓ Job saved! (Total: {total_jobs_scraped})\n")
 
                 self.driver.back()
-                time.sleep(2)
+                time.sleep(1)  # Reduced from 2
 
             if not self.next_page():
                 break
@@ -328,19 +338,33 @@ class WebScraper:
 
 
 def main():
-    scraper = WebScraper()  # Create an instance
-    scraper.initialize_driver()
-    scraper.initalize_wait()
-    scraper.navigate_to_page(URL)
-    scraper.login(username, password)
-    scraper.search(SEARCH)
-    scraper.get_job_results()
-    scraper.filter_by_location(LOCATION)
-    scraper.filter_by_coop()
-    scraper.scrape_data()
-    scraper.close_driver()
+    scraper = WebScraper()
 
-    Profiler.report()
+    try:
+        scraper.initialize_driver()
+        scraper.initalize_wait()
+        scraper.navigate_to_page(URL)
+        scraper.login(username, password)
+        scraper.search(SEARCH)
+        scraper.get_job_results()
+        scraper.filter_by_location(LOCATION)
+        scraper.filter_by_coop()
+
+        # SET THIS TO LIMIT JOBS - Easy to change for testing!
+        scraper.scrape_data(max_jobs=5)  # Change to None for all jobs
+
+    except Exception as e:
+        print(f"\n\n❌ Error occurred: {e}")
+    finally:
+        try:
+            scraper.close_driver()
+        except:
+            pass
+
+        print("\n" + "=" * 50)
+        print("📊 PERFORMANCE REPORT")
+        print("=" * 50)
+        Profiler.report()
 
 
 if __name__ == "__main__":
