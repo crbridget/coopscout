@@ -23,19 +23,21 @@ export default function Auth() {
 
     return (
         <div className="auth">
-            <h2>Sign In</h2>
-            <form onSubmit={handleLogin}>
-                <input
-                    className="email-box"
-                    type="email"
-                    placeholder="Your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <button className="submit-button" type="submit" disabled={loading}>
-                    {loading ? 'Loading...' : 'Send magic link'}
-                </button>
-            </form>
+            <div className="auth-container">
+                <h2>Sign In</h2>
+                <form onSubmit={handleLogin}>
+                    <input
+                        className="email-box"
+                        type="email"
+                        placeholder="Your email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <button className="submit-button" type="submit" disabled={loading}>
+                        {loading ? 'Loading...' : 'Send magic link'}
+                    </button>
+                </form>
+            </div>
         </div>
     );
 }

@@ -1,14 +1,48 @@
 .auth {
-    max-width: 400px;
-    min-height: 100vh;
-    padding-top: 80px;
-    align-content: center;
-    align-self: center;
-    margin: 0;
+    width: 100%;
+    min-height: calc(100vh - 80px); /* Full height minus navbar */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
 }
 
-.email-box {
+.auth-container {
+    max-width: 400px;
     width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
+    padding: 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.auth-container h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.auth-container input {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.submit-button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.auth-container button:hover {
+    background-color: #2563eb;
 }
