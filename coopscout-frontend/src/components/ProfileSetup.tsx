@@ -1,9 +1,16 @@
-import { userState } from 'react';
+import { useState } from "react";
 import { supabase } from '../lib/supabaseClient';
 import './ProfileSetup.css';
-import { UserFormData } from '../types/user';
+import type {UserFormData} from '../lib/types/user';
 
-export default function ProfileSetup({ userId, userEmail, onComplete} :ProfileSetupProps) {
+type ProfileSetupProps = {
+    userId: string;
+    userEmail: string;
+    onComplete: () => void;
+};
+
+export default function ProfileSetup({ userId, userEmail, onComplete }: ProfileSetupProps) {
+    const [loading, setLoading] = useState(false); // Add this missing state
     const [formData, setFormData] = useState<UserFormData>({
         full_name: '',
         major: '',
@@ -17,12 +24,13 @@ export default function ProfileSetup({ userId, userEmail, onComplete} :ProfileSe
         try {
             setLoading(true);
 
-            const{ error } = await supabase
+            const { error } = await supabase
                 .from('users')
                 .insert([
                     {
                         id: userId,
                         email: userEmail,
+                        full_name: formData.full_name, // Add this - you forgot it!
                         major: formData.major,
                         graduation_year: parseInt(formData.graduation_year),
                         gpa: parseFloat(formData.gpa)
@@ -35,7 +43,7 @@ export default function ProfileSetup({ userId, userEmail, onComplete} :ProfileSe
         } catch (error: any) {
             alert(error.message);
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     };
 
