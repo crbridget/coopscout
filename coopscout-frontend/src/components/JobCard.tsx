@@ -1,4 +1,4 @@
-import type { Job } from '../../public/lib/types/job';
+import type { Job } from '../lib/types/job';
 import './JobCard.css';
 
 interface JobCardProps {

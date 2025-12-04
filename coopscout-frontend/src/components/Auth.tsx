@@ -1,0 +1,43 @@
+import { useState } from 'react';
+import { supabase } from '../lib/supabaseClient';
+import './Auth.css';
+
+export default function Auth() {
+    const [loading, setLoading] = useState(false);
+    const [email, setEmail] = useState('');
+
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        try {
+            setLoading(true);
+            const { error } = await supabase.auth.signInWithOtp({ email });
+            if (error) throw error;
+            alert('Check your email for the login link!');
+        } catch (error: any) {
+            alert(error.error_description || error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="auth">
+            <div className="auth-container">
+                <h2>Sign In</h2>
+                <form onSubmit={handleLogin}>
+                    <input
+                        className="email-box"
+                        type="email"
+                        placeholder="Your email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <button className="submit-button" type="submit" disabled={loading}>
+                        {loading ? 'Loading...' : 'Send magic link'}
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+}
