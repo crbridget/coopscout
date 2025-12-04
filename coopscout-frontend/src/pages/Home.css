@@ -1,0 +1,14 @@
+.home-page {
+    width: 100%;
+    min-height: 100vh;
+    padding-top: 80px;
+    text-align: center;
+}
+
+.jobs-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 350px);
+    gap: 70px;
+    margin-top: 20px;
+    justify-content: center;
+}

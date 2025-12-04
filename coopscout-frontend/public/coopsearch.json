@@ -1,0 +1,22 @@
+[
+  {
+    "title": "Software Engineer Co-op",
+    "company": "Test Company",
+    "location": "Boston, MA, USA",
+    "deadline": "12/01/2024",
+    "compensation": "$25-30/hour",
+    "targeted major": "Computer Science",
+    "minimum GPA": "3.0",
+    "description": "This is a test job description."
+  },
+  {
+    "title": "Backend Developer Co-op",
+    "company": "Another Company",
+    "location": "Cambridge, MA, USA",
+    "deadline": "11/30/2024",
+    "compensation": "$30-35/hour",
+    "targeted major": "Computer Science, Software Engineering",
+    "minimum GPA": "3.2",
+    "description": "Another test description."
+  }
+]

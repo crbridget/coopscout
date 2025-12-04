@@ -1,0 +1,16 @@
+.profile-page {
+    width: 100%;
+    min-height: 100vh;
+    padding-top: 80px;
+    margin: 0;
+}
+
+.title {
+    color: #333;
+    margin-top: 2rem;
+}
+
+.paragraph {
+    color: #666;
+    font-size: 1.2rem;
+}
