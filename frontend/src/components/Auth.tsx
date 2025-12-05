@@ -3,6 +3,8 @@ import { supabase } from '../lib/supabaseClient';
 import './Auth.css';
 
 export default function Auth() {
+    console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
+    console.log('Has API Key:', !!import.meta.env.VITE_SUPABASE_ANON_KEY)
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
 
