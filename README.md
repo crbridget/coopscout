@@ -105,7 +105,7 @@ This is a personal project for Northeastern students. If you have suggestions or
 
 ## Authors
 
-Built by Bridget Crampton, Northeastern Data Science '28
+Built by Bridget Crampton, Northeastern Data Science '28, Olivia Hill, Northeastern Computer Science '28
 
 ## Project Status
 
