@@ -50,13 +50,13 @@ class WebScraper:
                 job_key = f"{job.get('title', '')}|{job.get('company', '')}"
                 self.previous_jobs[job_key] = job
 
-            print(f"📂 Loaded {len(self.previous_jobs)} jobs from previous scrape")
+            print(f" Loaded {len(self.previous_jobs)} jobs from previous scrape")
             return True
         except FileNotFoundError:
-            print("📂 No previous scrape found - all jobs will be marked as NEW")
+            print(" No previous scrape found - all jobs will be marked as NEW")
             return False
         except Exception as e:
-            print(f"⚠️  Error loading previous scrape: {e}")
+            print(f"  Error loading previous scrape: {e}")
             return False
 
     def is_new_job(self, job_title, company_name):
@@ -106,14 +106,14 @@ class WebScraper:
     @profile
     def navigate_to_page(self, url):
         """ """
-        print(f"🌐 Navigating to NUworks...")
+        print(f" Navigating to NUworks...")
         self.driver.get(url)
         print("✓ Page loaded")
 
     @profile
     def login(self, username, password):
         """ Login to NUworks with users user and password and then send a duo push to the user """
-        print("🔐 Logging in...")
+        print(" Logging in...")
 
         self.wait.until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "input[value='Current Students and Alumni']"))).click()
@@ -126,20 +126,20 @@ class WebScraper:
 
         self.driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
 
-        print("📱 Sending Duo push... (check your phone!)")
+        print(" Sending Duo push... (check your phone!)")
         duo_iframe = self.wait.until(EC.presence_of_element_located((By.ID, "duo_iframe")))
         self.driver.switch_to.frame(duo_iframe)
         self.wait.until(EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Send Me a Push')]"))).click()
 
         self.driver.switch_to.default_content()
-        print("⏳ Waiting for Duo approval...")
+        print(" Waiting for Duo approval...")
         self.duo_wait.until(EC.invisibility_of_element_located((By.ID, "duo_iframe")))
         print("✓ Login successful!")
 
     @profile
     def search(self, search):
         """ Search for a job or key word in the NUworks main search """
-        print(f"🔍 Searching for '{search}'...")
+        print(f" Searching for '{search}'...")
 
         time.sleep(2)
 
@@ -155,11 +155,11 @@ class WebScraper:
         search_bar.send_keys(Keys.ENTER)
 
         time.sleep(2)  # Wait for search results to load
-        print("✓ Search submitted")
+        print(" Search submitted")
 
     @profile
     def get_job_results(self):
-        print("📋 Loading job results...")
+        print(" Loading job results...")
 
         time.sleep(3)
 
@@ -177,7 +177,7 @@ class WebScraper:
         time.sleep(3)  # Wait for new page to load
 
         # DEBUG: See what page we landed on
-        print("🔍 Debugging - Checking what page we're on after clicking...")
+        print(" Debugging - Checking what page we're on after clicking...")
         print(f"Current URL: {self.driver.current_url}")
 
         # Look for job listings
@@ -192,19 +192,19 @@ class WebScraper:
         list_items = self.driver.find_elements(By.XPATH, "//div[contains(@class, 'list-item')]")
         print(f"\nFound {len(list_items)} list-item divs")
 
-        print("✓ Job results page loaded")
+        print("Job results page loaded")
 
     @profile
     def filter_by_location(self, location):
-        print(f"📍 Filtering by location: {location}...")
+        print(f"Filtering by location: {location}...")
         location_bar = self.wait.until(EC.element_to_be_clickable((By.ID, "jobs-location-input")))
         location_bar.send_keys(location + Keys.ENTER)
         time.sleep(2)
-        print("✓ Location filter applied")
+        print("Location filter applied")
 
     @profile
     def filter_by_coop(self):
-        print("🎓 Filtering for Co-op positions...")
+        print("Filtering for Co-op positions...")
 
         time.sleep(2)
 
@@ -219,7 +219,7 @@ class WebScraper:
         self.driver.execute_script("arguments[0].click();", coop_checkbox)
         time.sleep(2)
 
-        print("✓ Co-op filter applied")
+        print("Co-op filter applied")
 
     @profile
     def scrape_company(self):
@@ -230,7 +230,7 @@ class WebScraper:
         except Exception as e:
             error_msg = f"Failed to scrape company: {str(e)}"
             self.errors.append(error_msg)
-            print(f"      ⚠️  {error_msg}")
+            print(f"        {error_msg}")
             return "Not listed"
 
     @profile
@@ -290,10 +290,10 @@ class WebScraper:
             time.sleep(0.5)
             next_button.click()
             time.sleep(2)  # Wait for page to load
-            print("→ Moving to next page...")
+            print("Moving to next page...")
             return True
         except:
-            print("✓ No more pages to scrape")
+            print("No more pages to scrape")
             return False
 
     @profile
@@ -332,7 +332,7 @@ class WebScraper:
         print("\n" + "=" * 50)
         print("🎯 Starting job scraping process...")
         if max_jobs:
-            print(f"⚠️  Limited to {max_jobs} jobs for testing")
+            print(f"  Limited to {max_jobs} jobs for testing")
         print("=" * 50 + "\n")
 
         # Load previous scrape for comparison
@@ -345,7 +345,7 @@ class WebScraper:
         new_jobs_count = 0
 
         while True:
-            print(f"\n📄 PAGE {page_num}")
+            print(f"\nPAGE {page_num}")
             print("-" * 50)
 
             try:
@@ -363,7 +363,7 @@ class WebScraper:
                 for i in range(num_jobs):
                     # CHECK IF WE'VE HIT THE LIMIT
                     if max_jobs and total_jobs_scraped >= max_jobs:
-                        print(f"\n⚠️  Reached job limit of {max_jobs}. Stopping...")
+                        print(f"\n️ Reached job limit of {max_jobs}. Stopping...")
                         break
 
                     try:
@@ -376,7 +376,7 @@ class WebScraper:
 
                         # Check if element still exists
                         if i >= len(job_elements):
-                            print(f"      ⚠️  Job #{i + 1} disappeared from list, skipping...")
+                            print(f"        Job #{i + 1} disappeared from list, skipping...")
                             total_jobs_failed += 1
                             continue
 
@@ -411,7 +411,7 @@ class WebScraper:
                         print(f"      Location: {location}")
                         print(f"      Compensation: {compensation}")
                         if is_new:
-                            print(f"      🆕 NEW JOB!")
+                            print(f"      NEW JOB!")
 
                         # Store data with metadata
                         job_entry = {
@@ -431,7 +431,7 @@ class WebScraper:
 
                         all_jobs.append(job_entry)
                         total_jobs_scraped += 1
-                        print(f"      ✓ Job saved! (Total: {total_jobs_scraped})\n")
+                        print(f"       Job saved! (Total: {total_jobs_scraped})\n")
 
                     except Exception as e:
                         total_jobs_failed += 1
@@ -439,7 +439,7 @@ class WebScraper:
                         self.errors.append(error_msg)
                         job_title_for_log = job_title if 'job_title' in locals() else f"Job #{i + 1}"
                         self.failed_jobs.append(job_title_for_log)
-                        print(f"      ❌ Error scraping job: {str(e)[:100]}")
+                        print(f"       Error scraping job: {str(e)[:100]}")
                         print(f"      Continuing to next job...\n")
 
                     finally:
@@ -447,13 +447,13 @@ class WebScraper:
                             self.driver.back()
                             time.sleep(1)
                         except Exception as e:
-                            print(f"      ⚠️  Warning: Failed to navigate back: {str(e)}")
+                            print(f"        Warning: Failed to navigate back: {str(e)}")
 
                 if max_jobs and total_jobs_scraped >= max_jobs:
                     break
 
             except Exception as e:
-                print(f"\n❌ Error on page {page_num}: {str(e)}")
+                print(f"\n Error on page {page_num}: {str(e)}")
                 self.errors.append(f"Page {page_num} error: {str(e)}")
                 print("Attempting to continue to next page...")
 
@@ -467,19 +467,19 @@ class WebScraper:
 
         # Final summary
         print("\n" + "=" * 50)
-        print(f"🎉 SCRAPING COMPLETE!")
-        print(f"✅ Successfully scraped: {total_jobs_scraped} jobs")
-        print(f"🆕 New jobs: {len(new_jobs)}")
-        print(f"📋 Existing jobs: {len(existing_jobs)}")
+        print(f" SCRAPING COMPLETE!")
+        print(f" Successfully scraped: {total_jobs_scraped} jobs")
+        print(f" New jobs: {len(new_jobs)}")
+        print(f" Existing jobs: {len(existing_jobs)}")
         if removed_jobs:
-            print(f"🗑️  Removed jobs: {len(removed_jobs)} (no longer listed)")
+            print(f"  Removed jobs: {len(removed_jobs)} (no longer listed)")
         if total_jobs_failed > 0:
-            print(f"❌ Failed to scrape: {total_jobs_failed} jobs")
+            print(f" Failed to scrape: {total_jobs_failed} jobs")
         print("=" * 50 + "\n")
 
         # Show new jobs summary
         if new_jobs:
-            print("🆕 NEW JOBS FOUND:")
+            print(" NEW JOBS FOUND:")
             print("-" * 50)
             for i, job in enumerate(new_jobs[:10], 1):
                 print(f"{i}. {job['title']}")
@@ -490,11 +490,11 @@ class WebScraper:
             if len(new_jobs) > 10:
                 print(f"... and {len(new_jobs) - 10} more new jobs\n")
         else:
-            print("ℹ️  No new jobs found - all jobs were in previous scrape\n")
+            print("  No new jobs found - all jobs were in previous scrape\n")
 
         # Show removed jobs if any
         if removed_jobs:
-            print("🗑️  REMOVED JOBS (no longer listed):")
+            print("  REMOVED JOBS (no longer listed):")
             print("-" * 50)
             for i, job in enumerate(removed_jobs[:5], 1):
                 print(f"{i}. {job.get('title', 'Unknown')}")
@@ -505,14 +505,14 @@ class WebScraper:
 
         # Save data
         if all_jobs:
-            print("💾 Saving data to coopsearch.json...")
+            print(" Saving data to coopsearch.json...")
             df = pd.DataFrame.from_dict(all_jobs)
             df.to_json('coopsearch.json', orient='records', indent=2)
             print(f"✓ Successfully saved {len(all_jobs)} jobs to coopsearch.json")
 
             # Save only new jobs to separate file
             if new_jobs:
-                print("💾 Saving new jobs to coopsearch_new.json...")
+                print(" Saving new jobs to coopsearch_new.json...")
                 df_new = pd.DataFrame.from_dict(new_jobs)
                 df_new.to_json('coopsearch_new.json', orient='records', indent=2)
                 print(f"✓ Successfully saved {len(new_jobs)} new jobs to coopsearch_new.json")
@@ -520,17 +520,17 @@ class WebScraper:
             # Save scrape history
             self.save_scrape_history(all_jobs, new_jobs, existing_jobs, removed_jobs)
         else:
-            print("⚠️  No jobs were scraped - nothing to save")
+            print("️  No jobs were scraped - nothing to save")
 
         # Save error log if there were errors
         if self.errors:
-            print("\n💾 Saving error log to errors.txt...")
+            print("\n Saving error log to errors.txt...")
             with open('errors.txt', 'w') as f:
                 f.write(f"CoopScout Error Log - {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
                 f.write("=" * 50 + "\n\n")
                 for error in self.errors:
                     f.write(f"{error}\n")
-            print(f"✓ Saved {len(self.errors)} errors to errors.txt")
+            print(f" Saved {len(self.errors)} errors to errors.txt")
 
     def save_scrape_history(self, all_jobs, new_jobs, existing_jobs, removed_jobs):
         """Save history of scrapes for tracking changes over time"""
@@ -565,12 +565,12 @@ class WebScraper:
             print(f"✓ Updated scrape history (tracking last {len(history)} scrapes)")
 
         except Exception as e:
-            print(f"⚠️  Warning: Could not save scrape history: {e}")
+            print(f"  Warning: Could not save scrape history: {e}")
 
     def close_driver(self):
-        print("\n🔒 Closing browser...")
+        print("\n Closing browser...")
         self.driver.quit()
-        print("✓ Done! Happy job hunting! 🚀")
+        print(" Done! Happy job hunting! ")
 
 
 def main():
@@ -588,19 +588,19 @@ def main():
         scraper.scrape_data(max_jobs=5)  # Test with 5 jobs
 
     except KeyboardInterrupt:
-        print("\n\n⚠️  Scraping interrupted by user (Ctrl+C)")
+        print("\n\n️  Scraping interrupted by user (Ctrl+C)")
     except Exception as e:
-        print(f"\n\n❌ Critical error occurred: {e}")
+        print(f"\n\n Critical error occurred: {e}")
         import traceback
         traceback.print_exc()
     finally:
         try:
             scraper.close_driver()
         except Exception as e:
-            print(f"⚠️  Warning: Failed to close driver: {e}")
+            print(f"  Warning: Failed to close driver: {e}")
 
         print("\n" + "=" * 50)
-        print("📊 PERFORMANCE REPORT")
+        print(" PERFORMANCE REPORT")
         print("=" * 50)
         Profiler.report()
 
