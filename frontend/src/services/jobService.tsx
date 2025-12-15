@@ -6,8 +6,7 @@ export const jobService = {
         const { data, error } = await supabase
             .from('jobs')
             .select('*')
-            .eq('status', 'active')
-            .order('posted_date', { ascending: false });
+            .order('scraped_at', { ascending: false });
 
         if (error) throw error;
         return data || [];
