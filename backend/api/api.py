@@ -3,6 +3,8 @@ from flask import request, jsonify
 from flask_cors import CORS
 from supabase import create_client
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
@@ -18,14 +20,14 @@ def home():
     return '''<h1>Coop Scout</h1>
     <p>An API for coop job postings on NUworks.</p>'''
 
-@app.route('/api/v1/coops/all', methods=['GET'])
+@app.route('/api/v1/jobs/all', methods=['GET'])
 def api_all():
-    response = supabase.table('coops').select("*").execute()
+    response = supabase.table('jobs').select("*").execute()
     return jsonify(response.data)
 
-@app.route('/api/v1/coops', methods=['GET'])
+@app.route('/api/v1/jobs', methods=['GET'])
 def api_filter():
-    query = supabase.table('coops').select("*")
+    query = supabase.table('jobs').select("*")
     
     if 'title' in request.args:
         query = query.ilike('title', f'%{request.args["title"]}%')
