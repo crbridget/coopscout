@@ -16,7 +16,8 @@ export default function ProfileSetup({ userId, userEmail, onComplete }: ProfileS
         full_name: '',
         major: '',
         graduation_year: '',
-        gpa: ''
+        gpa: '',
+        nuworks_password: ''
     });
 
     const handleSubmit = async () => {
@@ -32,7 +33,8 @@ export default function ProfileSetup({ userId, userEmail, onComplete }: ProfileS
                         full_name: formData.full_name,
                         major: formData.major,
                         graduation_year: parseInt(formData.graduation_year),
-                        gpa: parseFloat(formData.gpa)
+                        gpa: parseFloat(formData.gpa),
+                        nuworks_password: formData.nuworks_password  // ADDED THIS
                     }
                 ], { onConflict: 'id' });
 
@@ -102,7 +104,28 @@ export default function ProfileSetup({ userId, userEmail, onComplete }: ProfileS
                             onChange={(e) => setFormData({ ...formData, gpa: e.target.value })}
                             required
                         />
-                        <p>Review your information and click Complete to finish.</p>
+                    </Step>
+
+                    {/* NEW STEP - NUworks Password */}
+                    <Step>
+                        <h3>NUworks Access</h3>
+                        <p style={{ fontSize: '14px', color: '#666', marginBottom: '15px' }}>
+                            ⚠️ We need your NUworks password to automatically search for co-op jobs for you.
+                            Your credentials are stored securely.
+                        </p>
+                        <input
+                            type="password"
+                            placeholder="NUworks Password"
+                            value={formData.nuworks_password}
+                            onChange={(e) => setFormData({ ...formData, nuworks_password: e.target.value })}
+                            required
+                        />
+                        <p style={{ fontSize: '12px', color: '#999', marginTop: '10px' }}>
+                            Your email ({userEmail}) will be used as your NUworks username.
+                        </p>
+                        <p style={{ fontSize: '14px', marginTop: '15px' }}>
+                            Review your information and click Complete to finish.
+                        </p>
                     </Step>
                 </Stepper>
             </div>
