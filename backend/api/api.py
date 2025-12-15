@@ -11,8 +11,8 @@ app.config["DEBUG"] = True
 CORS(app)
 
 # Initialize Supabase
-SUPABASE_URL = os.getenv("SUPABASE_URL")  # store in .env file
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SUPABASE_URL = os.getenv("VITE_SUPABASE_URL")  # store in .env file
+SUPABASE_KEY = os.getenv("VITE_SUPABASE_ANON_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 @app.route('/', methods=['GET'])

@@ -322,8 +322,8 @@ class WebScraper:
             'location': location,
             'deadline': deadline,
             'compensation': compensation,
-            'targeted major': major,
-            'minimum GPA': min_GPA,
+            'targeted_major': major,
+            'minimuma_gpa': min_GPA,
             'description': description
         }
 
@@ -420,8 +420,8 @@ class WebScraper:
                             'location': location,
                             'deadline': deadline,
                             'compensation': compensation,
-                            'targeted major': major,
-                            'minimum GPA': min_GPA,
+                            'targeted_major': major,
+                            'minimum_gpa': min_GPA,
                             'description': description,
                             'status': 'NEW' if is_new else 'EXISTING',
                             'scraped_at': datetime.now().isoformat(),
@@ -585,7 +585,7 @@ def main():
         scraper.get_job_results()
         scraper.filter_by_location(LOCATION)
         scraper.filter_by_coop()
-        scraper.scrape_data(max_jobs=5)  # Test with 5 jobs
+        scraper.scrape_data()  # Test with 5 jobs
 
     except KeyboardInterrupt:
         print("\n\n️  Scraping interrupted by user (Ctrl+C)")

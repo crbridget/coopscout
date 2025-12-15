@@ -8,5 +8,53 @@
     "existing_jobs": 5,
     "removed_jobs": 0,
     "new_job_titles": []
+  },
+  {
+    "timestamp": "2025-12-15T14:17:49.640841",
+    "search_keywords": "software engineering",
+    "search_location": "Boston, MA, USA",
+    "total_jobs": 5,
+    "new_jobs": 1,
+    "existing_jobs": 4,
+    "removed_jobs": 1,
+    "new_job_titles": [
+      "First-year Engineering Technical Specialist @ First Year Engineering Learning & Innovation Center"
+    ]
+  },
+  {
+    "timestamp": "2025-12-15T14:20:47.831072",
+    "search_keywords": "software engineering",
+    "search_location": "Boston, MA, USA",
+    "total_jobs": 5,
+    "new_jobs": 0,
+    "existing_jobs": 5,
+    "removed_jobs": 0,
+    "new_job_titles": []
+  },
+  {
+    "timestamp": "2025-12-15T14:27:44.699179",
+    "search_keywords": "software engineering",
+    "search_location": "Boston, MA, USA",
+    "total_jobs": 20,
+    "new_jobs": 15,
+    "existing_jobs": 5,
+    "removed_jobs": 0,
+    "new_job_titles": [
+      "Software Engineering Co-op (Full-Stack) @ ThinkStruct",
+      "Electrical Co-op @ BuroHappold Engineering",
+      "Graduate Mechanical Engineer @ BuroHappold Engineering",
+      "Graduate Plumbing & Fire Protection Engineer @ BuroHappold Engineering",
+      "Electrical Intern @ BuroHappold Engineering",
+      "Graduate Electrical Engineer @ BuroHappold Engineering",
+      "Mechanical Intern @ BuroHappold Engineering",
+      "Plumbing & Fire Protection Intern @ BuroHappold Engineering",
+      "Software Engineering Co-op - January 2026 @ Wayfair LLC",
+      "Graduate ICT Engineer @ BuroHappold Engineering",
+      "Advisory Building Performance Intern @ BuroHappold Engineering",
+      "Staff Engineer - New Grad @ Bohler Engineering",
+      "Landscape Designer @ Bohler Engineering",
+      "Assistant Director of College Students Support Services @ RCA Interactive Software Systems and Academic Services Co",
+      "Assistant Director of Sports teams and Clubs Sponsorships @ RCA Interactive Software Systems and Academic Services Co"
+    ]
   }
 ]
