@@ -7,12 +7,12 @@ from datetime import datetime
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, parent_dir)
 
-from scraper.scraper import scrape_with_cookies
+from scraper import scrape_with_cookies
 from supabase import create_client
 from dotenv import load_dotenv
 
 # Load environment variables
-load_dotenv(os.path.join(parent_dir, '.env'))
+load_dotenv(os.path.join('.env'))
 
 SUPABASE_URL = os.getenv("VITE_SUPABASE_URL")
 SUPABASE_KEY = os.getenv("VITE_SUPABASE_ANON_KEY")
