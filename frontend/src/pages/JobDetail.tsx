@@ -62,8 +62,10 @@ function JobDetail() {
     if (!job) {
         return (
             <div className="job-detail-page">
-                <p>Job not found</p>
-                <button onClick={() => navigate('/')}>Back to Home</button>
+                <div className="job-not-found">
+                    <p>Job not found</p>
+                    <button onClick={() => navigate('/')}>Back to Home</button>
+                </div>
             </div>
         );
     }

@@ -23,6 +23,11 @@
     font-size: 1.5rem;
 }
 
+.navbar-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
 .profile-button {
     background-color: #3b82f6;
     color: white;

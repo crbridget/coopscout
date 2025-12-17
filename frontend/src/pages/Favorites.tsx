@@ -15,7 +15,6 @@ function Favorites() {
 
     const loadData = async () => {
         try {
-            // Load favorites from localStorage
             const favoritesString = localStorage.getItem('favorites');
             const favoriteIds = favoritesString ? JSON.parse(favoritesString) : [];
             setFavorites(favoriteIds);
@@ -57,7 +56,7 @@ function Favorites() {
             {favoriteJobs.length === 0 ? (
                 <div className="no-favorites">
                     <p>You haven't saved any jobs yet!</p>
-                    <p>Click the heart icon on any job to save it here.</p>
+                    <p>Click the star icon on any job to save it here.</p>
                 </div>
             ) : (
                 <div className="favorites-grid">

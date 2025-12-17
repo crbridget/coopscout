@@ -6,6 +6,38 @@
     background-color: #f9fafb;
 }
 
+.job-not-found {
+    max-width: 600px;
+    margin: 4rem auto;
+    padding: 3rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.job-not-found p {
+    font-size: 1.5rem;
+    color: #374151;
+    margin-bottom: 2rem;
+}
+
+.job-not-found button {
+    padding: 0.875rem 2rem;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.job-not-found button:hover {
+    background-color: #2563eb;
+}
+
 .back-btn {
     margin: 20px;
     padding: 10px 20px;
