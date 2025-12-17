@@ -31,7 +31,7 @@ export default function Auth() {
                     <input
                         className="email-box"
                         type="email"
-                        placeholder="Your email"
+                        placeholder="Your Northeastern email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />

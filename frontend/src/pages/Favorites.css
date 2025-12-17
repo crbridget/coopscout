@@ -1,0 +1,39 @@
+.favorites-page {
+    width: 100%;
+    min-height: 100vh;
+    padding-top: 80px;
+    padding-bottom: 40px;
+}
+
+.favorites-title {
+    text-align: center;
+    color: #333;
+    margin: 2rem 0;
+    font-size: 2.5rem;
+}
+
+.favorites-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.no-favorites {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #666;
+}
+
+.no-favorites p {
+    font-size: 1.2rem;
+    margin: 1rem 0;
+}
+
+.no-favorites p:first-child {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+}
