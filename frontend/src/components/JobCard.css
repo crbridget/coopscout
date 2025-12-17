@@ -4,10 +4,14 @@
     padding: 20px;
     background-color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
     width: 350px;
     height: 400px;
     overflow: hidden;
+    transition: box-shadow 0.2s;
+}
+
+.job-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .job-title {
@@ -17,6 +21,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.job-title:hover {
+    color: #3b82f6;
+    text-decoration: underline;
 }
 
 .job-company {
@@ -48,7 +59,6 @@
     border-top: 1px solid #eee;
     color: #555;
     font-size: 0.85rem;
-
     max-height: 120px;
     overflow: hidden;
     text-overflow: ellipsis;

@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import type { Job } from '../lib/types/job';
 import './JobCard.css';
 
@@ -8,13 +9,26 @@ interface JobCardProps {
 }
 
 function JobCard({ job, onToggleFavorite, isFavorite }: JobCardProps) {
+    const navigate = useNavigate();
+
+    const handleTitleClick = () => {
+        navigate(`/job/${job.id}`);
+    };
+
+    const handleFavoriteClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        onToggleFavorite();
+    };
+
     return (
         <div className="job-card">
             <div className="card-header">
-                <h2 className="job-title">{job.title}</h2>
+                <h2 className="job-title" onClick={handleTitleClick}>
+                    {job.title}
+                </h2>
                 <button
                     className={`favorite-btn ${isFavorite ? 'favorited' : ''}`}
-                    onClick={onToggleFavorite}
+                    onClick={handleFavoriteClick}
                 >
                     {isFavorite ? '★' : '☆'}
                 </button>
