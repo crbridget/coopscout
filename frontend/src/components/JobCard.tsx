@@ -26,8 +26,8 @@ function JobCard({ job, onToggleFavorite, isFavorite }: JobCardProps) {
                 <p><strong>Location:</strong> {job.location}</p>
                 <p><strong>Deadline:</strong> {job.deadline}</p>
                 <p><strong>Compensation:</strong> {job.compensation}</p>
-                <p><strong>Major:</strong> {job["targeted major"]}</p>
-                <p><strong>Min GPA:</strong> {job["minimum GPA"]}</p>
+                <p><strong>Major:</strong> {job.targeted_major}</p>
+                <p><strong>Min GPA:</strong> {job.minimum_GPA}</p>
             </div>
 
             <div className="job-description">
