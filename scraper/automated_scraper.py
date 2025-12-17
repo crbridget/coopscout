@@ -21,6 +21,7 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 # ADMIN COOKIES - Used for all users
 ADMIN_COOKIES_FILE = 'cookies_admin.pkl'
 
+
 def scrape_for_all_users():
     """
     Automated scraper: Uses admin cookies to scrape personalized jobs for each user
@@ -44,9 +45,6 @@ def scrape_for_all_users():
 
     # Get all users from database
     response = supabase.table('users').select('*').execute()
-    print(f"Response: {response}")
-    print(f"Data: {response.data}")
-    print(f"Count: {response.count if hasattr(response, 'count') else 'N/A'}")
     users = response.data
 
     if not users:
@@ -65,10 +63,10 @@ def scrape_for_all_users():
         email = user['email']
         major = user.get('major', 'Computer Science')
 
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"Processing: {email}")
         print(f"Major: {major}")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
 
         try:
             print("Starting scrape...")
@@ -89,21 +87,46 @@ def scrape_for_all_users():
                 try:
                     job['user_id'] = user_id
                     job['status'] = 'active'
+
+                    # Clean numeric fields - convert "Not listed" to None
+                    if job.get('minimum_gpa') == 'Not listed':
+                        job['minimum_gpa'] = None
+                    if job.get('compensation') == 'Not listed':
+                        job['compensation'] = None
+
+                    # Check if job already exists for this user
+                    existing = supabase.table('jobs') \
+                        .select('id') \
+                        .eq('user_id', user_id) \
+                        .eq('title', job['title']) \
+                        .eq('company', job['company']) \
+                        .execute()
+
+                    if existing.data:
+                        print(f"  SKIPPED: Duplicate - {job['title']} at {job['company']}")
+                        continue
+
+                    # Insert only if it doesn't exist
                     supabase.table('jobs').insert(job).execute()
                     jobs_added += 1
+
                 except Exception as e:
-                    print(f"  WARNING: Could not insert job: {e}")
+                    # Check if it's a duplicate error from database constraint
+                    if 'unique_user_job' in str(e) or '23505' in str(e):
+                        print(
+                            f"  SKIPPED: Duplicate - {job.get('title', 'Unknown')} at {job.get('company', 'Unknown')}")
+                    else:
+                        print(f"  WARNING: Could not insert job: {e}")
                     continue
 
             print(f"SUCCESS: Added {jobs_added} jobs for {email}")
             total_jobs_added += jobs_added
             successful_users += 1
 
-
         except Exception as e:
             print(f"ERROR: Failed to scrape for {email}: {e}")
             import traceback
-            print(traceback.format_exc())  # This will show the full error
+            print(traceback.format_exc())
             failed_users += 1
             continue
 
@@ -119,4 +142,3 @@ def scrape_for_all_users():
 
 if __name__ == "__main__":
     scrape_for_all_users()
-
