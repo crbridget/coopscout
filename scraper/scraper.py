@@ -9,6 +9,7 @@ import json
 import pickle
 from datetime import datetime
 import pandas as pd
+from selenium.common.exceptions import TimeoutException
 
 class NUWorksScraper:
     """Reusable NUworks scraper - can use login or saved cookies"""
@@ -63,16 +64,22 @@ class NUWorksScraper:
     def login_with_cookies(self, cookies):
         """Login using saved cookies - no Duo needed"""
         print("Loading saved cookies...")
-        
+
         for cookie in cookies:
             try:
                 self.driver.add_cookie(cookie)
             except Exception as e:
                 pass  # Some cookies might fail, that's okay
-        
-        self.driver.refresh()
-        time.sleep(2)
+
         print("Logged in with cookies")
+
+        # CRITICAL FIX: Navigate to the job search page
+        print("Navigating to job search page...")
+        self.driver.get("https://northeastern-csm.symplicity.com/students/index.php?mode=list&s=jobs")
+        time.sleep(3)  # Give the page time to load
+
+        print(f"Current URL: {self.driver.current_url}")
+        print(f"Page title: {self.driver.title}")
 
     def load_cookies_from_file(self, filename):
         """Load cookies from pickle file"""
@@ -80,33 +87,71 @@ class NUWorksScraper:
             return pickle.load(f)
 
     def search(self, search_term):
-        print(f"Searching for '{search_term}'...")
-        time.sleep(2)
+        try:
+            print(f"Looking for search toggle button...")
+            search_toggle = self.wait.until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, "button.quicksearch-toggle"))
+            )
+            print("Search toggle found, clicking...")
+            search_toggle.click()
+            time.sleep(1)
 
-        search_toggle = self.wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button.quicksearch-toggle")))
-        search_toggle.click()
-        time.sleep(1)
+            # NOW ENTER THE SEARCH TERM
+            print(f"Entering search term: '{search_term}'...")
+            search_input = self.wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='search']"))
+            )
+            search_input.clear()
+            search_input.send_keys(search_term)
+            search_input.send_keys(Keys.ENTER)
 
-        search_bar = self.wait.until(EC.visibility_of_element_located((By.ID, "quicksearch-field")))
-        search_bar.click()
-        search_bar.send_keys(search_term)
-        search_bar.send_keys(Keys.ENTER)
+            print(f"Search submitted for '{search_term}'")
+            time.sleep(3)  # Wait for results to load
 
-        time.sleep(2)
-        print("Search submitted")
+        except TimeoutException:
+            print("WARNING: Search toggle not found. Trying alternative selector...")
+            try:
+                # Maybe the search is already expanded?
+                search_input = self.driver.find_element(By.CSS_SELECTOR, "input[type='search']")
+                print("Search input already visible")
+                search_input.clear()
+                search_input.send_keys(search_term)
+                search_input.send_keys(Keys.ENTER)
+                print(f"Search submitted for '{search_term}'")
+                time.sleep(3)
+            except:
+                print("ERROR: Could not find search elements")
+                raise
 
     def get_job_results(self):
-        print("Loading job results...")
+        print("Looking for job results...")
         time.sleep(3)
 
-        job_results_link = self.wait.until(
-            EC.presence_of_element_located((By.XPATH, "//a[text()='See all job results']")))
+        try:
+            # Try the original method first
+            job_results_link = self.wait.until(
+                EC.presence_of_element_located((By.XPATH, "//a[text()='See all job results']"))
+            )
+            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", job_results_link)
+            time.sleep(1)
+            self.driver.execute_script("arguments[0].click();", job_results_link)
+            time.sleep(3)
+            print("Job results page loaded")
+        except TimeoutException:
+            print("'See all job results' link not found - results may already be displayed")
+            # Check if we're already on a results page
+            print(f"Current URL: {self.driver.current_url}")
 
-        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", job_results_link)
-        time.sleep(1)
-        self.driver.execute_script("arguments[0].click();", job_results_link)
-        time.sleep(3)
-        print("Job results page loaded")
+            # Try to find job listings directly
+            try:
+                job_listings = self.driver.find_elements(By.CSS_SELECTOR, "div.list-item-title span")
+                if job_listings:
+                    print(f"Found {len(job_listings)} job listings already displayed")
+                    return  # We're good, results are already shown
+                else:
+                    raise Exception("Could not find job results or listings")
+            except:
+                raise Exception("Could not find job results - page may have changed")
 
     def filter_by_location(self, location):
         print(f"Filtering by location: {location}...")
@@ -151,9 +196,16 @@ class NUWorksScraper:
     def scrape_compensation(self):
         try:
             compensation_element = self.driver.find_element(By.CSS_SELECTOR, '[id^="sy_formfield_compensation_"]')
-            return compensation_element.text.strip()
+            comp_text = compensation_element.text.strip()
+
+            # Return None if not listed or empty
+            if comp_text == "Not listed" or not comp_text:
+                return None
+
+            return comp_text  # Keep as text since compensation can be "$20-25/hr" etc.
+
         except Exception as e:
-            return "Not listed"
+            return None
 
     def scrape_major(self):
         try:
@@ -165,9 +217,20 @@ class NUWorksScraper:
     def scrape_min_gpa(self):
         try:
             min_gpa = self.driver.find_element(By.CSS_SELECTOR, '[id^="sy_formfield_screen_gpa_"]')
-            return min_gpa.text.strip()
+            gpa_text = min_gpa.text.strip()
+
+            # Return None if not a valid number
+            if gpa_text == "Not listed" or not gpa_text:
+                return None
+
+            # Try to convert to float, return None if it fails
+            try:
+                return float(gpa_text)
+            except ValueError:
+                return None
+
         except Exception as e:
-            return "Not listed"
+            return None
 
     def scrape_description(self):
         try:
