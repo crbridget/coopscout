@@ -14,8 +14,14 @@ const NavBar = () => {
                     <button
                         className="profile-button"
                         onClick={() => navigate('/profile')}
-                    >
+                        >
                         Profile
+                    </button>
+                    <button
+                        className="favorites-button"
+                        onClick={() => navigate('/favorites')}
+                        >
+                        Favorites
                     </button>
                 </div>
             </div>
