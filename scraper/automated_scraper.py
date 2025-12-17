@@ -44,6 +44,9 @@ def scrape_for_all_users():
 
     # Get all users from database
     response = supabase.table('users').select('*').execute()
+    print(f"Response: {response}")
+    print(f"Data: {response.data}")
+    print(f"Count: {response.count if hasattr(response, 'count') else 'N/A'}")
     users = response.data
 
     if not users:
@@ -96,8 +99,11 @@ def scrape_for_all_users():
             total_jobs_added += jobs_added
             successful_users += 1
 
+
         except Exception as e:
             print(f"ERROR: Failed to scrape for {email}: {e}")
+            import traceback
+            print(traceback.format_exc())  # This will show the full error
             failed_users += 1
             continue
 
@@ -113,3 +119,4 @@ def scrape_for_all_users():
 
 if __name__ == "__main__":
     scrape_for_all_users()
+
