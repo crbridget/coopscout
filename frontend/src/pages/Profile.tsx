@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import { useNavigate } from 'react-router-dom';
 import Auth from '../components/Auth';
 import ProfileSetup from '../components/ProfileSetup';
 import './Profile.css';
@@ -9,6 +10,7 @@ function Profile() {
     const [session, setSession] = useState<any>(null);
     const [userProfile, setUserProfile] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Get current session
@@ -99,7 +101,10 @@ function Profile() {
                 <p><strong>Graduation Year:</strong> {userProfile.graduation_year}</p>
                 <p><strong>GPA:</strong> {userProfile.gpa}</p>
             </div>
-            <button onClick={handleSignOut}>Sign Out</button>
+            <div className="button-group">
+                <button onClick={() => navigate('/edit-profile')}>Edit Profile</button>
+                <button onClick={handleSignOut}>Sign Out</button>
+            </div>
         </div>
     );
 }
