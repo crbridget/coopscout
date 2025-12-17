@@ -97,7 +97,7 @@ export default function ProfileSetup({ userId, userEmail, onComplete }: ProfileS
                         <input
                             type="number"
                             step="0.01"
-                            placeholder="GPA (e.g., 3.83)"
+                            placeholder="GPA"
                             value={formData.gpa}
                             onChange={(e) => setFormData({ ...formData, gpa: e.target.value })}
                             required
