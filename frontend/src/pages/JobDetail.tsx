@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabaseClient';
-import type { Job } from '../lib/types/job';
+import { supabase } from '../lib/supabaseClient.ts';
+import type { Job } from '../lib/types/job.ts';
 import './JobDetail.css';
 
 function JobDetail() {
