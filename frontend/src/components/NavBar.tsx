@@ -24,8 +24,8 @@ const NavBar = () => {
                         Favorites
                     </button>
                     <button
-                        className="application-button"
-                        onClick={() => navigate('/applicationtracker')}
+                        className="applications-button"
+                        onClick={() => navigate('/applicationTracker')}
                     >
                         Applications
                     </button>

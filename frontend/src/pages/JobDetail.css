@@ -1,44 +1,161 @@
-.tracking-banner {
-    background-color: #dbeafe;
-    border: 2px solid #3b82f6;
-    border-radius: 8px;
-    padding: 1rem 1.5rem;
+.job-detail-page {
+    width: 100%;
+    min-height: 100vh;
+    padding-top: 80px;
+    padding-bottom: 40px;
+    background-color: #f9fafb;
+}
+
+.job-not-found {
+    max-width: 600px;
+    margin: 4rem auto;
+    padding: 3rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.job-not-found p {
+    font-size: 1.5rem;
+    color: #374151;
     margin-bottom: 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
-.tracking-banner span {
-    color: #1e40af;
-    font-size: 1rem;
-}
-
-.tracking-banner strong {
-    text-transform: capitalize;
-    font-weight: 700;
-}
-
-.tracking-banner button {
+.job-not-found button {
+    padding: 0.875rem 2rem;
     background-color: #3b82f6;
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    cursor: pointer;
+    border-radius: 8px;
+    font-size: 1rem;
     font-weight: 600;
+    cursor: pointer;
     transition: background-color 0.2s;
 }
 
-.tracking-banner button:hover {
+.job-not-found button:hover {
     background-color: #2563eb;
 }
 
-.tracker-btn {
+.back-btn {
+    margin: 20px;
+    padding: 10px 20px;
+    background-color: #6b7280;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.back-btn:hover {
+    background-color: #4b5563;
+}
+
+.job-detail-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.job-header h1 {
+    font-size: 2rem;
+    color: #111827;
+    margin: 0 0 0.5rem 0;
+}
+
+.job-header h2 {
+    font-size: 1.5rem;
+    color: #6b7280;
+    margin: 0;
+    font-weight: 500;
+}
+
+.favorite-btn-large {
+    font-size: 2.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #d1d5db;
+    transition: color 0.2s;
+}
+
+.favorite-btn-large.favorited {
+    color: #f59e0b;
+}
+
+.favorite-btn-large:hover {
+    color: #fbbf24;
+}
+
+.job-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background-color: #f9fafb;
+    border-radius: 8px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.info-item strong {
+    color: #6b7280;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-item span {
+    color: #111827;
+    font-size: 1.125rem;
+    font-weight: 500;
+}
+
+.job-description-section {
+    margin-bottom: 2rem;
+}
+
+.job-description-section h3 {
+    font-size: 1.5rem;
+    color: #111827;
+    margin-bottom: 1rem;
+}
+
+.job-description-section p {
+    color: #4b5563;
+    line-height: 1.8;
+    font-size: 1.125rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.apply-btn,
+.save-btn {
     flex: 1;
     padding: 1rem 2rem;
-    background-color: #3b82f6;
-    color: white;
     border: none;
     border-radius: 8px;
     font-size: 1.125rem;
@@ -47,6 +164,20 @@
     transition: all 0.2s;
 }
 
-.tracker-btn:hover {
+.apply-btn {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.apply-btn:hover {
     background-color: #2563eb;
+}
+
+.save-btn {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+.save-btn:hover {
+    background-color: #e5e7eb;
 }

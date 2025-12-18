@@ -6,7 +6,7 @@ import './Favorites.css';
 
 function Favorites() {
     const [allJobs, setAllJobs] = useState<Job[]>([]);
-    const [favorites, setFavorites] = useState<number[]>([]);
+    const [favorites, setFavorites] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -34,7 +34,7 @@ function Favorites() {
         }
     };
 
-    const handleToggleFavorite = (jobId: number) => {
+    const handleToggleFavorite = (jobId: string) => {
         const newFavorites = favorites.includes(jobId)
             ? favorites.filter(id => id !== jobId)
             : [...favorites, jobId];
@@ -43,7 +43,7 @@ function Favorites() {
         localStorage.setItem('favorites', JSON.stringify(newFavorites));
     };
 
-    const favoriteJobs = allJobs.filter(job => favorites.includes(job.id as number));
+    const favoriteJobs = allJobs.filter(job => favorites.includes(job.id));
 
     if (loading) {
         return <div className="favorites-page">Loading your favorites...</div>;
@@ -64,7 +64,7 @@ function Favorites() {
                         <JobCard
                             key={job.id}
                             job={job}
-                            onToggleFavorite={() => handleToggleFavorite(job.id as number)}
+                            onToggleFavorite={() => handleToggleFavorite(job.id)}
                             isFavorite={true}
                         />
                     ))}

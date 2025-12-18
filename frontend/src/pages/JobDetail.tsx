@@ -16,13 +16,13 @@ function JobDetail() {
 
     useEffect(() => {
         if (id) {
-            loadJob(parseInt(id));
-            checkIfFavorite(parseInt(id));
-            checkAuthAndApplication(parseInt(id));
+            loadJob(id);
+            checkIfFavorite(id);
+            checkAuthAndApplication(id);
         }
     }, [id]);
 
-    const checkAuthAndApplication = async (jobId: number) => {
+    const checkAuthAndApplication = async (jobId: string) => {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
             setUserId(user.id);
@@ -30,7 +30,7 @@ function JobDetail() {
         }
     };
 
-    const checkIfTracked = async (userId: string, jobId: number) => {
+    const checkIfTracked = async (userId: string, jobId: string) => {
         try {
             const { data } = await supabase
                 .from('applications')
@@ -49,7 +49,7 @@ function JobDetail() {
         }
     };
 
-    const loadJob = async (jobId: number) => {
+    const loadJob = async (jobId: string) => {
         try {
             const { data, error } = await supabase
                 .from('jobs')
@@ -66,7 +66,7 @@ function JobDetail() {
         }
     };
 
-    const checkIfFavorite = (jobId: number) => {
+    const checkIfFavorite = (jobId: string) => {
         const favoritesString = localStorage.getItem('favorites');
         const favorites = favoritesString ? JSON.parse(favoritesString) : [];
         setIsFavorite(favorites.includes(jobId));
@@ -79,7 +79,7 @@ function JobDetail() {
         const favorites = favoritesString ? JSON.parse(favoritesString) : [];
 
         const newFavorites = isFavorite
-            ? favorites.filter((id: number) => id !== job.id)
+            ? favorites.filter((id: string) => id !== job.id)
             : [...favorites, job.id];
 
         localStorage.setItem('favorites', JSON.stringify(newFavorites));

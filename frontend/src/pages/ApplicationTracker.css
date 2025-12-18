@@ -1,228 +1,113 @@
-.tracker-page {
-    width: 100%;
-    min-height: 100vh;
-    padding-top: 80px;
-    padding-bottom: 40px;
-    background-color: #f9fafb;
+.app-notes-section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
 }
 
-.tracker-page h1 {
-    text-align: center;
-    color: #333;
-    margin: 2rem 0;
-    font-size: 2.5rem;
+.notes-display {
+    min-height: 40px;
 }
 
-.tracker-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    max-width: 1200px;
-    margin: 0 auto 2rem auto;
-    padding: 0 2rem;
-}
-
-.stat-card {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-.stat-number {
-    display: block;
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #3b82f6;
-}
-
-.stat-label {
-    display: block;
-    font-size: 0.9rem;
-    color: #666;
-    margin-top: 0.5rem;
-}
-
-.filter-bar {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin: 2rem 0;
-    padding: 0 2rem;
-}
-
-.filter-bar button {
-    padding: 0.5rem 1.5rem;
-    border: 2px solid #e5e7eb;
-    background: white;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: all 0.2s;
-}
-
-.filter-bar button:hover {
-    border-color: #3b82f6;
-    color: #3b82f6;
-}
-
-.filter-bar button.active {
-    background-color: #3b82f6;
-    color: white;
-    border-color: #3b82f6;
-}
-
-.applications-list {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-.application-card {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.2s;
-}
-
-.application-card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.app-header {
+.notes-header {
     display: flex;
     justify-content: space-between;
-    align-items: start;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 2px solid #f3f4f6;
+    align-items: center;
+    margin-bottom: 0.5rem;
 }
 
-.app-title {
-    font-size: 1.5rem;
-    color: #111827;
-    margin: 0 0 0.5rem 0;
-    cursor: pointer;
-    transition: color 0.2s;
+.notes-header strong {
+    color: #374151;
 }
 
-.app-title:hover {
-    color: #3b82f6;
-    text-decoration: underline;
-}
-
-.app-company {
-    font-size: 1.1rem;
-    color: #6b7280;
+.notes-display p {
     margin: 0;
+    color: #4b5563;
+    line-height: 1.6;
+    background-color: #f9fafb;
+    padding: 0.75rem;
+    border-radius: 6px;
 }
 
-.delete-btn {
+.edit-notes-btn,
+.add-notes-btn {
     background: none;
     border: none;
-    font-size: 1.5rem;
-    color: #9ca3af;
+    color: #3b82f6;
     cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
     padding: 0.25rem 0.5rem;
     transition: color 0.2s;
 }
 
-.delete-btn:hover {
-    color: #ef4444;
+.edit-notes-btn:hover,
+.add-notes-btn:hover {
+    color: #2563eb;
+    text-decoration: underline;
 }
 
-.app-info {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-}
-
-.app-info p {
-    margin: 0;
-    color: #4b5563;
-    font-size: 0.95rem;
-}
-
-.app-status-section {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin: 1rem 0;
-}
-
-.app-status-section label {
-    font-weight: 600;
-    color: #374151;
-}
-
-.app-status-section select {
+.add-notes-btn {
+    font-size: 1rem;
     padding: 0.5rem 1rem;
-    border: 2px solid;
+    border: 2px dashed #d1d5db;
+    border-radius: 6px;
+    width: 100%;
+}
+
+.add-notes-btn:hover {
+    border-color: #3b82f6;
+    background-color: #f0f9ff;
+    text-decoration: none;
+}
+
+.notes-edit textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e5e7eb;
     border-radius: 6px;
     font-size: 1rem;
-    cursor: pointer;
-    background: white;
-    transition: all 0.2s;
+    font-family: inherit;
+    resize: vertical;
+    box-sizing: border-box;
 }
 
-.app-status-section select:focus {
+.notes-edit textarea:focus {
     outline: none;
+    border-color: #3b82f6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-.app-notes {
-    margin-top: 1rem;
-    padding: 1rem;
-    background-color: #f9fafb;
-    border-radius: 8px;
+.notes-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
 }
 
-.app-notes strong {
-    color: #374151;
-    display: block;
-    margin-bottom: 0.5rem;
+.save-notes-btn,
+.cancel-notes-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-.app-notes p {
-    margin: 0;
-    color: #4b5563;
-    line-height: 1.6;
-}
-
-.no-applications {
-    text-align: center;
-    padding: 4rem 2rem;
-    background: white;
-    border-radius: 12px;
-    max-width: 600px;
-    margin: 2rem auto;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.no-applications p {
-    font-size: 1.25rem;
-    color: #6b7280;
-    margin-bottom: 1.5rem;
-}
-
-.no-applications button {
-    padding: 0.75rem 2rem;
+.save-notes-btn {
     background-color: #3b82f6;
     color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
 }
 
-.no-applications button:hover {
+.save-notes-btn:hover {
     background-color: #2563eb;
+}
+
+.cancel-notes-btn {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+.cancel-notes-btn:hover {
+    background-color: #e5e7eb;
 }

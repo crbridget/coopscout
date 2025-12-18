@@ -6,6 +6,7 @@ import JobDetail from './pages/JobDetail';
 import EditProfile from './components/EditProfile';
 import NavBar from './components/NavBar';
 import './App.css';
+import ApplicationTracker from "./pages/ApplicationTracker.tsx";
 
 function App() {
     return (
@@ -17,6 +18,7 @@ function App() {
                 <Route path="/edit-profile" element={<EditProfile />} />
                 <Route path="/favorites" element={<Favorites />} />
                 <Route path="/job/:id" element={<JobDetail />} />
+                <Route path="/applications" element={<ApplicationTracker />} />
             </Routes>
         </>
     );
