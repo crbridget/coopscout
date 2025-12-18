@@ -142,7 +142,7 @@ function Home() {
 
     return (
         <div className="home-page">
-            <h1>CoopScout</h1>
+            <h1>Co-op Scout</h1>
             <p>Found {jobs.length} co-op positions</p>
 
             <div className="jobs-container">

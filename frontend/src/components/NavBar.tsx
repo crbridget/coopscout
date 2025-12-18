@@ -28,7 +28,7 @@ const NavBar = () => {
                         </svg>
                     </button>
                     <h1 className="navbar-title" onClick={() => navigate('/')} style={{cursor: 'pointer'}}>
-                        CoopScout
+                        Co-op Scout
                     </h1>
                 </div>
                 <div className="navbar-buttons">
