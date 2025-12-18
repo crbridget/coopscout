@@ -69,11 +69,11 @@ class NUWorksScraper:
             try:
                 self.driver.add_cookie(cookie)
             except Exception as e:
-                pass  # Some cookies might fail, that's okay
+                pass
 
         print("Logged in with cookies")
 
-        # CRITICAL FIX: Navigate to the job search page
+        # Navigate to the job search page
         print("Navigating to job search page...")
         self.driver.get("https://northeastern-csm.symplicity.com/students/index.php?mode=list&s=jobs")
         time.sleep(3)  # Give the page time to load
@@ -96,7 +96,7 @@ class NUWorksScraper:
             search_toggle.click()
             time.sleep(1)
 
-            # NOW ENTER THE SEARCH TERM
+            # Enter the Search term
             print(f"Entering search term: '{search_term}'...")
             search_input = self.wait.until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, "input[type='search']"))
