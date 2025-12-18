@@ -25,7 +25,7 @@ const NavBar = () => {
                     </button>
                     <button
                         className="applications-button"
-                        onClick={() => navigate('/applicationTracker')}
+                        onClick={() => navigate('/applications')}
                     >
                         Applications
                     </button>
