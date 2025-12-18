@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient.ts';
+import { favoriteService } from '../services/favoriteService';
 import type { Job } from '../lib/types/job.ts';
 import './JobDetail.css';
 
@@ -13,20 +14,40 @@ function JobDetail() {
     const [isTracked, setIsTracked] = useState(false);
     const [applicationStatus, setApplicationStatus] = useState<string | null>(null);
     const [userId, setUserId] = useState<string | null>(null);
+    const [checkingFavorite, setCheckingFavorite] = useState(true);
 
     useEffect(() => {
         if (id) {
             loadJob(id);
-            checkIfFavorite(id);
-            checkAuthAndApplication(id);
+            checkAuth(id);
         }
     }, [id]);
 
-    const checkAuthAndApplication = async (jobId: string) => {
+    const checkAuth = async (jobId: string) => {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
             setUserId(user.id);
-            checkIfTracked(user.id, jobId);
+            await Promise.all([
+                checkIfFavorite(user.id, jobId),
+                checkIfTracked(user.id, jobId)
+            ]);
+        } else {
+            setCheckingFavorite(false);
+        }
+    };
+
+    const checkIfFavorite = async (userId: string, jobId: string) => {
+        setCheckingFavorite(true);
+        try {
+            const favorites = await favoriteService.getFavorites(userId);
+            const isFav = favorites.includes(jobId);
+            console.log('Checking favorite:', { jobId, favorites, isFav }); // Debug
+            setIsFavorite(isFav);
+        } catch (error) {
+            console.error('Error checking favorite:', error);
+            setIsFavorite(false);
+        } finally {
+            setCheckingFavorite(false);
         }
     };
 
@@ -44,7 +65,6 @@ function JobDetail() {
                 setApplicationStatus(data.status);
             }
         } catch (error) {
-            // Not tracked yet, which is fine
             setIsTracked(false);
         }
     };
@@ -66,24 +86,27 @@ function JobDetail() {
         }
     };
 
-    const checkIfFavorite = (jobId: string) => {
-        const favoritesString = localStorage.getItem('favorites');
-        const favorites = favoritesString ? JSON.parse(favoritesString) : [];
-        setIsFavorite(favorites.includes(jobId));
-    };
-
-    const toggleFavorite = () => {
+    const toggleFavorite = async () => {
         if (!job) return;
 
-        const favoritesString = localStorage.getItem('favorites');
-        const favorites = favoritesString ? JSON.parse(favoritesString) : [];
+        if (!userId) {
+            alert('Please sign in to save favorites');
+            navigate('/profile');
+            return;
+        }
 
-        const newFavorites = isFavorite
-            ? favorites.filter((id: string) => id !== job.id)
-            : [...favorites, job.id];
+        const previousState = isFavorite;
 
-        localStorage.setItem('favorites', JSON.stringify(newFavorites));
         setIsFavorite(!isFavorite);
+
+        try {
+            await favoriteService.toggleFavorite(userId, job.id, isFavorite);
+            console.log('Toggled favorite:', { jobId: job.id, newState: !isFavorite }); // Debug
+        } catch (error) {
+            console.error('Error toggling favorite:', error);
+            setIsFavorite(previousState);
+            alert('Failed to update favorite');
+        }
     };
 
     const addToApplications = async (status: string = 'saved') => {
@@ -148,6 +171,7 @@ function JobDetail() {
                     <button
                         className={`favorite-btn-large ${isFavorite ? 'favorited' : ''}`}
                         onClick={toggleFavorite}
+                        disabled={checkingFavorite}
                     >
                         {isFavorite ? '★' : '☆'}
                     </button>
