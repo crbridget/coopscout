@@ -18,6 +18,7 @@ function AddCustomJob({ userId, onClose, onJobAdded }: AddCustomJobProps) {
         targeted_major: '',
         minimum_GPA: '',
         description: '',
+        job_link: '',
         status: 'saved'
     });
     const [saving, setSaving] = useState(false);
@@ -66,7 +67,8 @@ function AddCustomJob({ userId, onClose, onJobAdded }: AddCustomJobProps) {
                     compensation: formData.compensation || 'Not specified',
                     targeted_major: formData.targeted_major || 'Any',
                     minimum_GPA: formData.minimum_GPA || '0.0',
-                    description: formData.description || 'No description provided'
+                    description: formData.description || 'No description provided',
+                    job_link: formData.job_link || null
                 })
                 .select()
                 .single();
@@ -130,6 +132,16 @@ function AddCustomJob({ userId, onClose, onJobAdded }: AddCustomJobProps) {
                                     required
                                 />
                             </div>
+                        </div>
+
+                        <div className="form-group">
+                            <label>Job Posting Link</label>
+                            <input
+                                type="url"
+                                value={formData.job_link}
+                                onChange={(e) => setFormData({ ...formData, job_link: e.target.value })}
+                                placeholder="https://example.com/job-posting"
+                            />
                         </div>
 
                         <div className="form-row">
