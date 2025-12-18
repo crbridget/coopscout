@@ -14,6 +14,8 @@ function ApplicationTracker() {
     const [applications, setApplications] = useState<ApplicationWithJob[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<string>('all');
+    const [editingNotes, setEditingNotes] = useState<number | null>(null);
+    const [noteText, setNoteText] = useState('');
 
     useEffect(() => {
         checkAuthAndLoadApplications();
@@ -43,7 +45,6 @@ function ApplicationTracker() {
 
             if (error) throw error;
 
-            // Flatten the data structure
             const applicationsWithJobs = data.map(app => ({
                 ...app,
                 job: app.jobs
@@ -92,6 +93,41 @@ function ApplicationTracker() {
         } catch (error) {
             console.error('Error deleting application:', error);
             alert('Failed to delete application');
+        }
+    };
+
+    const startEditingNotes = (appId: number, currentNotes: string | null) => {
+        setEditingNotes(appId);
+        setNoteText(currentNotes || '');
+    };
+
+    const cancelEditingNotes = () => {
+        setEditingNotes(null);
+        setNoteText('');
+    };
+
+    const saveNotes = async (appId: number) => {
+        try {
+            const { error } = await supabase
+                .from('applications')
+                .update({
+                    notes: noteText.trim() || null,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('id', appId);
+
+            if (error) throw error;
+
+            // Update local state
+            setApplications(applications.map(app =>
+                app.id === appId ? { ...app, notes: noteText.trim() || null } : app
+            ));
+
+            setEditingNotes(null);
+            setNoteText('');
+        } catch (error) {
+            console.error('Error saving notes:', error);
+            alert('Failed to save notes');
         }
     };
 
@@ -235,12 +271,50 @@ function ApplicationTracker() {
                                 </select>
                             </div>
 
-                            {app.notes && (
-                                <div className="app-notes">
-                                    <strong>Notes:</strong>
-                                    <p>{app.notes}</p>
-                                </div>
-                            )}
+                            <div className="app-notes-section">
+                                {editingNotes === app.id ? (
+                                    <div className="notes-edit">
+                    <textarea
+                        value={noteText}
+                        onChange={(e) => setNoteText(e.target.value)}
+                        placeholder="Add notes about this application..."
+                        rows={4}
+                    />
+                                        <div className="notes-buttons">
+                                            <button className="save-notes-btn" onClick={() => saveNotes(app.id)}>
+                                                Save
+                                            </button>
+                                            <button className="cancel-notes-btn" onClick={cancelEditingNotes}>
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="notes-display">
+                                        {app.notes ? (
+                                            <>
+                                                <div className="notes-header">
+                                                    <strong>Notes:</strong>
+                                                    <button
+                                                        className="edit-notes-btn"
+                                                        onClick={() => startEditingNotes(app.id, app.notes)}
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                </div>
+                                                <p>{app.notes}</p>
+                                            </>
+                                        ) : (
+                                            <button
+                                                className="add-notes-btn"
+                                                onClick={() => startEditingNotes(app.id, null)}
+                                            >
+                                                + Add Notes
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     ))}
                 </div>

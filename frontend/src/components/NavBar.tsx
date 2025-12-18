@@ -23,6 +23,12 @@ const NavBar = () => {
                         >
                         Favorites
                     </button>
+                    <button
+                        className="applications-button"
+                        onClick={() => navigate('/applications')}
+                    >
+                        Applications
+                    </button>
                 </div>
             </div>
         </div>
