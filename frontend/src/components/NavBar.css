@@ -28,6 +28,8 @@
     gap: 1rem;
 }
 
+.applications-button,
+.favorites-button,
 .profile-button {
     background-color: #3b82f6;
     color: white;
@@ -35,21 +37,12 @@
     padding: 0.5rem 1rem;
     border-radius: 6px;
     cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s;
 }
 
+.applications-button:hover,
+.favorites-button:hover,
 .profile-button:hover {
-    background-color: #2563eb;
-}
-
-.favorites-button {
-    background-color: #3b82f6;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.favorites-button:hover {
     background-color: #2563eb;
 }

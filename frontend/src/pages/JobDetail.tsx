@@ -10,13 +10,44 @@ function JobDetail() {
     const [job, setJob] = useState<Job | null>(null);
     const [loading, setLoading] = useState(true);
     const [isFavorite, setIsFavorite] = useState(false);
+    const [isTracked, setIsTracked] = useState(false);
+    const [applicationStatus, setApplicationStatus] = useState<string | null>(null);
+    const [userId, setUserId] = useState<string | null>(null);
 
     useEffect(() => {
         if (id) {
             loadJob(parseInt(id));
             checkIfFavorite(parseInt(id));
+            checkAuthAndApplication(parseInt(id));
         }
     }, [id]);
+
+    const checkAuthAndApplication = async (jobId: number) => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+            setUserId(user.id);
+            checkIfTracked(user.id, jobId);
+        }
+    };
+
+    const checkIfTracked = async (userId: string, jobId: number) => {
+        try {
+            const { data } = await supabase
+                .from('applications')
+                .select('status')
+                .eq('user_id', userId)
+                .eq('job_id', jobId)
+                .single();
+
+            if (data) {
+                setIsTracked(true);
+                setApplicationStatus(data.status);
+            }
+        } catch (error) {
+            // Not tracked yet, which is fine
+            setIsTracked(false);
+        }
+    };
 
     const loadJob = async (jobId: number) => {
         try {
@@ -55,6 +86,38 @@ function JobDetail() {
         setIsFavorite(!isFavorite);
     };
 
+    const addToApplications = async (status: string = 'saved') => {
+        if (!job || !userId) {
+            alert('Please sign in to track applications');
+            navigate('/profile');
+            return;
+        }
+
+        try {
+            const { error } = await supabase
+                .from('applications')
+                .insert({
+                    user_id: userId,
+                    job_id: job.id,
+                    status: status,
+                    applied_date: status === 'applied' ? new Date().toISOString() : null
+                });
+
+            if (error) throw error;
+
+            setIsTracked(true);
+            setApplicationStatus(status);
+            alert(`Added to Application Tracker as "${status}"!`);
+        } catch (error) {
+            console.error('Error adding to applications:', error);
+            alert('Failed to add to tracker. Please try again.');
+        }
+    };
+
+    const goToTracker = () => {
+        navigate('/applications');
+    };
+
     if (loading) {
         return <div className="job-detail-page">Loading...</div>;
     }
@@ -90,6 +153,13 @@ function JobDetail() {
                     </button>
                 </div>
 
+                {isTracked && (
+                    <div className="tracking-banner">
+                        <span>Currently tracking this job as: <strong>{applicationStatus}</strong></span>
+                        <button onClick={goToTracker}>View in Tracker →</button>
+                    </div>
+                )}
+
                 <div className="job-info-grid">
                     <div className="info-item">
                         <strong>Location:</strong>
@@ -119,10 +189,20 @@ function JobDetail() {
                 </div>
 
                 <div className="action-buttons">
-                    <button className="apply-btn">Apply Now</button>
-                    <button className="save-btn" onClick={toggleFavorite}>
-                        {isFavorite ? 'Saved ✓' : 'Save for Later'}
-                    </button>
+                    {!isTracked ? (
+                        <>
+                            <button className="apply-btn" onClick={() => addToApplications('applied')}>
+                                Mark as Applied
+                            </button>
+                            <button className="save-btn" onClick={() => addToApplications('saved')}>
+                                Save to Tracker
+                            </button>
+                        </>
+                    ) : (
+                        <button className="tracker-btn" onClick={goToTracker}>
+                            Manage in Application Tracker
+                        </button>
+                    )}
                 </div>
             </div>
         </div>
