@@ -322,3 +322,21 @@
 .no-applications button:hover {
     background-color: #2563eb;
 }
+
+.add-custom-job-btn {
+    display: block;
+    margin: 0 auto 2rem auto;
+    padding: 0.875rem 2rem;
+    background-color: #10b981;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.add-custom-job-btn:hover {
+    background-color: #059669;
+}

@@ -6,7 +6,7 @@ import { favoriteService } from '../services/favoriteService';
 import { supabase } from '../lib/supabaseClient';
 import './Home.css';
 
-const JOBS_PER_PAGE = 20;
+const JOBS_PER_PAGE = 21;
 
 function Home() {
     const [jobs, setJobs] = useState<Job[]>([]);

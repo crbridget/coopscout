@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import type { Application } from '../lib/types/application';
 import type { Job } from '../lib/types/job';
 import './ApplicationTracker.css';
+import AddCustomJob from "../components/AddCustomJob.tsx";
 
 interface ApplicationWithJob extends Application {
     job?: Job;
@@ -16,6 +17,8 @@ function ApplicationTracker() {
     const [filter, setFilter] = useState<string>('all');
     const [editingNotes, setEditingNotes] = useState<number | null>(null);
     const [noteText, setNoteText] = useState('');
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [currentUser, setCurrentUser] = useState<any>(null);
 
     useEffect(() => {
         checkAuthAndLoadApplications();
@@ -29,6 +32,7 @@ function ApplicationTracker() {
             return;
         }
 
+        setCurrentUser(user);
         loadApplications(user.id);
     };
 
@@ -118,7 +122,6 @@ function ApplicationTracker() {
 
             if (error) throw error;
 
-            // Update local state
             setApplications(applications.map(app =>
                 app.id === appId ? { ...app, notes: noteText.trim() || null } : app
             ));
@@ -154,27 +157,36 @@ function ApplicationTracker() {
         <div className="tracker-page">
             <h1>Application Tracker</h1>
 
+            {currentUser && (
+                <button
+                    className="add-custom-job-btn"
+                    onClick={() => setShowAddModal(true)}
+                >
+                    + Add External Job
+                </button>
+            )}
+
             <div className="tracker-stats">
                 <div className="stat-card">
                     <span className="stat-number">{applications.length}</span>
                     <span className="stat-label">Total Applications</span>
                 </div>
                 <div className="stat-card">
-          <span className="stat-number">
-            {applications.filter(a => a.status === 'applied').length}
-          </span>
+                    <span className="stat-number">
+                        {applications.filter(a => a.status === 'applied').length}
+                    </span>
                     <span className="stat-label">Applied</span>
                 </div>
                 <div className="stat-card">
-          <span className="stat-number">
-            {applications.filter(a => a.status === 'interview').length}
-          </span>
+                    <span className="stat-number">
+                        {applications.filter(a => a.status === 'interview').length}
+                    </span>
                     <span className="stat-label">Interviews</span>
                 </div>
                 <div className="stat-card">
-          <span className="stat-number">
-            {applications.filter(a => a.status === 'offer').length}
-          </span>
+                    <span className="stat-number">
+                        {applications.filter(a => a.status === 'offer').length}
+                    </span>
                     <span className="stat-label">Offers</span>
                 </div>
             </div>
@@ -274,12 +286,12 @@ function ApplicationTracker() {
                             <div className="app-notes-section">
                                 {editingNotes === app.id ? (
                                     <div className="notes-edit">
-                    <textarea
-                        value={noteText}
-                        onChange={(e) => setNoteText(e.target.value)}
-                        placeholder="Add notes about this application..."
-                        rows={4}
-                    />
+                                        <textarea
+                                            value={noteText}
+                                            onChange={(e) => setNoteText(e.target.value)}
+                                            placeholder="Add notes about this application..."
+                                            rows={4}
+                                        />
                                         <div className="notes-buttons">
                                             <button className="save-notes-btn" onClick={() => saveNotes(app.id)}>
                                                 Save
@@ -318,6 +330,16 @@ function ApplicationTracker() {
                         </div>
                     ))}
                 </div>
+            )}
+
+            {showAddModal && currentUser && (
+                <AddCustomJob
+                    userId={currentUser.id}
+                    onClose={() => setShowAddModal(false)}
+                    onJobAdded={() => {
+                        loadApplications(currentUser.id);
+                    }}
+                />
             )}
         </div>
     );
