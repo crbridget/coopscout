@@ -6,6 +6,16 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+def handle_supabase_query(query_function):
+    """Wrapper to handle Supabase errors"""
+    try:
+        response = query_function()
+        if response.data is None:
+            return jsonify({"error": "No data found"}), 404
+        return jsonify(response.data), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 CORS(app)
