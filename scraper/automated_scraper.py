@@ -7,7 +7,7 @@ from datetime import datetime
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, parent_dir)
 
-from scraper import scrape_with_cookies
+from scraper import scrape_with_cookies, NUWorksScraper
 from supabase import create_client
 from dotenv import load_dotenv
 
@@ -20,6 +20,110 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # ADMIN COOKIES - Used for all users
 ADMIN_COOKIES_FILE = 'cookies_admin.pkl'
+
+
+def validate_cookies(cookies):
+    """Test if cookies are still valid by attempting to access the job page"""
+    print("Validating cookies...")
+    scraper = NUWorksScraper(headless=True)
+
+    try:
+        scraper.initialize_driver()
+        scraper.navigate_to_page()
+        scraper.login_with_cookies(cookies)
+
+        # Check if we're actually logged in
+        if "signin" in scraper.driver.current_url.lower() or "sign-in" in scraper.driver.title.lower():
+            print("Cookies are INVALID or EXPIRED")
+            return False
+
+        print("Cookies are valid!")
+        return True
+
+    except Exception as e:
+        print(f"Cookie validation failed: {e}")
+        return False
+    finally:
+        scraper.close()
+
+
+def save_fresh_cookies():
+    """Prompt user to generate fresh cookies"""
+    print("\n" + "!" * 60)
+    print("COOKIES ARE EXPIRED - FRESH LOGIN REQUIRED")
+    print("!" * 60)
+    print("\nYou need to generate fresh cookies. Here's how:")
+    print("\n1. Run: python save_user_cookies.py")
+    print("2. Complete Duo authentication")
+    print("3. Rename the output file to: cookies_admin.pkl")
+    print("4. Run this script again")
+    print("\nOR")
+    print("\nProvide credentials for automatic re-login:")
+
+    username = input("Enter username (or press Enter to skip): ").strip()
+    if not username:
+        return None
+
+    password = input("Enter password: ").strip()
+    if not password:
+        return None
+
+    print("\nAttempting to generate fresh cookies...")
+
+    from selenium import webdriver
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
+    import time
+
+    driver = webdriver.Chrome()
+    wait = WebDriverWait(driver, 10)
+    duo_wait = WebDriverWait(driver, 60)
+
+    try:
+        driver.get("https://northeastern-csm.symplicity.com/students/?signin_tab=0")
+
+        wait.until(EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, "input[value='Current Students and Alumni']")
+        )).click()
+
+        username_input = wait.until(EC.presence_of_element_located((By.ID, "username")))
+        username_input.send_keys(username)
+        password_input = driver.find_element(By.ID, "password")
+        password_input.send_keys(password)
+        driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+
+        print("Sending Duo push... (check your phone!)")
+        duo_iframe = wait.until(EC.presence_of_element_located((By.ID, "duo_iframe")))
+        driver.switch_to.frame(duo_iframe)
+        wait.until(EC.element_to_be_clickable(
+            (By.XPATH, "//button[contains(text(), 'Send Me a Push')]")
+        )).click()
+        driver.switch_to.default_content()
+
+        print("Waiting for Duo approval...")
+        duo_wait.until(EC.invisibility_of_element_located((By.ID, "duo_iframe")))
+
+        print("Login successful! Navigating to job page...")
+        driver.get("https://northeastern-csm.symplicity.com/students/index.php?mode=list&s=jobs")
+        time.sleep(5)
+
+        if "signin" in driver.current_url.lower():
+            raise Exception("Still on login page after authentication!")
+
+        cookies = driver.get_cookies()
+
+        with open(ADMIN_COOKIES_FILE, 'wb') as f:
+            pickle.dump(cookies, f)
+
+        print(f"✓ Saved {len(cookies)} fresh cookies to {ADMIN_COOKIES_FILE}")
+        return cookies
+
+    except Exception as e:
+        print(f"ERROR: Failed to generate fresh cookies: {e}")
+        return None
+    finally:
+        driver.quit()
 
 
 def scrape_for_all_users():
@@ -37,11 +141,25 @@ def scrape_for_all_users():
         print(f"   Then rename the cookies file to: {ADMIN_COOKIES_FILE}")
         return
 
-    # Load admin cookies ONCE
+    # Load admin cookies
     print("Loading admin cookies...")
     with open(ADMIN_COOKIES_FILE, 'rb') as f:
         admin_cookies = pickle.load(f)
-    print("Admin cookies loaded\n")
+    print(f"Loaded {len(admin_cookies)} cookies\n")
+
+    # Validate cookies before proceeding
+    if not validate_cookies(admin_cookies):
+        print("\nAttempting to generate fresh cookies...")
+        admin_cookies = save_fresh_cookies()
+
+        if not admin_cookies:
+            print("\nCannot proceed without valid cookies. Exiting...")
+            return
+
+        # Validate the new cookies
+        if not validate_cookies(admin_cookies):
+            print("\nFresh cookies are still invalid. Please check manually.")
+            return
 
     # Get all users from database
     response = supabase.table('users').select('*').execute()

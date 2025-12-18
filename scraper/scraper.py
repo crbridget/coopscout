@@ -177,21 +177,21 @@ class NUWorksScraper:
                 EC.presence_of_element_located((By.CSS_SELECTOR, "h3.space-right-sm.text-overflow")))
             return company_element.text.strip()
         except Exception as e:
-            return "Not listed"
+            return None
 
     def scrape_location(self):
         try:
             location_element = self.driver.find_element(By.CSS_SELECTOR, '[id^="sy_formfield_location_"]')
             return location_element.text.strip()
         except Exception as e:
-            return "Not listed"
+            return None
 
     def scrape_deadline(self):
         try:
             deadline_element = self.driver.find_element(By.ID, "sy_formfield_job_deadline")
             return deadline_element.text.strip()
         except Exception as e:
-            return "Not listed"
+            return None
 
     def scrape_compensation(self):
         try:
@@ -212,7 +212,7 @@ class NUWorksScraper:
             major_element = self.driver.find_element(By.CSS_SELECTOR, '[id^="sy_formfield_targeted_academic_majors_"]')
             return major_element.text.strip()
         except Exception as e:
-            return "Not listed"
+            return None
 
     def scrape_min_gpa(self):
         try:
@@ -237,7 +237,16 @@ class NUWorksScraper:
             description_div = self.driver.find_element(By.CSS_SELECTOR, "div.field-widget-tinymce")
             return description_div.text
         except Exception as e:
-            return "Not listed"
+            return None
+
+    def scrape_link(self):
+        """Scrape the current job posting URL"""
+        try:
+            # The current URL is the job posting link
+            return self.driver.current_url
+        except Exception as e:
+            print(f"Error scraping link: {e}")
+            return "Not available"
 
     def next_page(self):
         try:
@@ -311,6 +320,7 @@ class NUWorksScraper:
                         major = self.scrape_major()
                         min_GPA = self.scrape_min_gpa()
                         description = self.scrape_description()
+                        job_link = self.scrape_link()
 
                         print(f"  [{i + 1}/{num_jobs}] Scraped: {job_title}")
                         print(f"      Company: {company_name}")
@@ -324,9 +334,10 @@ class NUWorksScraper:
                             'targeted_major': major,
                             'minimum_gpa': min_GPA,
                             'description': description,
+                            'job_link': job_link,
                             'scraped_at': datetime.now().isoformat(),
                             'search_keywords': search_term,
-                            'search_location': location
+                            'search_location': location,
                         }
 
                         all_jobs.append(job_entry)
