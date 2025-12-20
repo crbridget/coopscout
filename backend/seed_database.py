@@ -1,3 +1,5 @@
+""" For manual seeding of database """
+
 from supabase import create_client
 import json
 import os

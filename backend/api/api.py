@@ -32,7 +32,7 @@ def home():
 
 @app.route('/api/v1/jobs/all', methods=['GET'])
 def api_all():
-    response = supabase.table('jobs').select("*").execute()
+    response = supabase.table('jobs').select("*").execute()  # select 'jobs' table in supabase
     return jsonify(response.data)
 
 @app.route('/api/v1/jobs', methods=['GET'])
