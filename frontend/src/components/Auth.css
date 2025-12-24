@@ -1,6 +1,6 @@
 .auth {
     width: 100%;
-    min-height: calc(100vh - 80px); /* Full height minus navbar */
+    min-height: calc(100vh - 80px);
     display: flex;
     justify-content: center;
     align-items: center;
